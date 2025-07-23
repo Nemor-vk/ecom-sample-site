@@ -1,0 +1,15 @@
+model Role {
+    id          String       @id @default(uuid())
+    name        String       @unique
+    description String?
+    users       User[]       @relation("UserRoles")
+    permissions Permission[] @relation("RolePermissions")
+}
+
+model Permission {
+    id          String  @id @default(uuid())
+    action      String // e.g., "create", "read", "update", "delete"
+    resource    String // e.g., "user", "post", "product"
+    description String?
+    roles       Role[]  @relation("RolePermissions")
+}

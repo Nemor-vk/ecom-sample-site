@@ -1,0 +1,21 @@
+model User {
+    id           String    @id @default(uuid())
+    fullName     String
+    email        String    @unique
+    password     String
+    profileImage String?
+    dateOfBirth  DateTime
+    mobileNumber String    @unique
+    gender       Gender?
+    createdAt    DateTime  @default(now())
+    updatedAt    DateTime  @updatedAt
+    Order        Order[]
+    roleId       String
+    role         Role      @relation("UserRoles", fields: [roleId], references: [id])
+    Address      Address[]
+}
+
+enum Gender {
+    Male
+    Female
+}

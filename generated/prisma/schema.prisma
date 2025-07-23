@@ -1,0 +1,222 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Address {
+  id             String             @id @default(uuid())
+  user           User               @relation(fields: [userId], references: [id])
+  userId         String
+  labelPreset    AddressLabelPreset @default(Home)
+  customLabel    String? // nullable if preset is used
+  primaryAddress String // Label or alias (e.g. "Home", "Work")
+  streetAddress  String // Full street input
+  recipientName  String?
+  city           String
+  state          String
+  landmark       String? // Nullable
+  pincode        String // e.g. "400070"
+  phoneNumber    String // Always store as string for reliability
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+}
+
+enum AddressLabelPreset {
+  Home
+  Work
+  Hotel
+  Others
+}
+
+model Category {
+  id           String    @id @default(uuid())
+  name         String    @unique
+  description  String?
+  imageUrl     String?
+  products     Product[]
+  sections     Section[]
+  isActive     Boolean?
+  productCount Int?
+
+  // ðŸ‘‡ Self-relation to support nested categories
+  parentId      String?
+  parent        Category?  @relation("Subcategories", fields: [parentId], references: [id])
+  subcategories Category[] @relation("Subcategories")
+
+  discountId String?
+  Discount   Discount? @relation(fields: [discountId], references: [id])
+}
+
+model Discount {
+  id                String            @id @default(cuid())
+  code              String            @unique
+  name              String
+  description       String?
+  type              DiscountType
+  value             Float
+  minOrderAmount    Float?
+  maxDiscountAmount Float?
+  usageLimit        Int?
+  usageLimitPeriod  UsageLimitPeriod?
+  usedCount         Int               @default(0)
+  isActive          Boolean           @default(true)
+  validFrom         DateTime
+  validUntil        DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  orders Order[]
+
+  products   Product[]
+  categories Category[]
+}
+
+enum DiscountType {
+  PERCENTAGE
+  FIXED_AMOUNT
+  FREE_SHIPPING
+  BUY_X_GET_Y
+}
+
+enum UsageLimitPeriod {
+  LIFETIME
+  HOURLY
+  DAILY
+  WEEKLY
+  MONTHLY
+}
+
+model Image {
+  id        String   @id @default(uuid())
+  url       String
+  altText   String?
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
+model Order {
+  id           String      @id @default(uuid())
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  status       OrderStatus @default(PENDING)
+  paymentTotal Decimal     @db.Decimal(10, 2)
+  userId       String
+  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  discount     Discount?   @relation(fields: [discountId], references: [id])
+  discountId   String?
+
+  // ðŸ‘‡ Relation field for the many-to-many link
+  orderItems OrderItem[]
+}
+
+// ðŸ§© Junction table to connect Orders and Products
+model OrderItem {
+  id         String  @id @default(uuid())
+  orderId    String
+  productId  String
+  quantity   Int     @default(1)
+  amountPaid Decimal @db.Decimal(10, 2)
+
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Restrict)
+
+  @@unique([orderId, productId]) // prevent duplicate entries
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  COMPLETED
+  CANCELLED
+  REFUNDED
+  RETURNED
+}
+
+enum ProductType {
+  PHYSICAL
+  DIGITAL
+}
+
+model Product {
+  id                   String      @id @default(uuid())
+  name                 String      @unique
+  description          String?
+  price                Decimal     @db.Decimal(10, 2)
+  stock                Int         @default(0)
+  productType          ProductType @default(PHYSICAL)
+  rating               Int         @default(0)
+  filePath             String?
+  downloadUrl          String?
+  image                Image[]
+  productTags          String[]
+  availableForPurchase Boolean     @default(true)
+  createdAt            DateTime    @default(now())
+  updatedAt            DateTime    @updatedAt
+  categoryId           String
+  category             Category    @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  sections             Section[]
+
+  // ðŸ‘‡ Relation field for the many-to-many link
+  orderItems OrderItem[]
+
+  discountId String?
+  Discount   Discount? @relation(fields: [discountId], references: [id])
+}
+
+model Role {
+  id          String       @id @default(uuid())
+  name        String       @unique
+  description String?
+  users       User[]       @relation("UserRoles")
+  permissions Permission[] @relation("RolePermissions")
+}
+
+model Permission {
+  id          String  @id @default(uuid())
+  action      String // e.g., "create", "read", "update", "delete"
+  resource    String // e.g., "user", "post", "product"
+  description String?
+  roles       Role[]  @relation("RolePermissions")
+}
+
+model Section {
+  id          String     @id @default(uuid())
+  name        String     @unique
+  description String?
+  imageUrl    String?
+  isActive    Boolean?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  products    Product[]
+  category    Category[]
+}
+
+model User {
+  id           String    @id @default(uuid())
+  fullName     String
+  email        String    @unique
+  password     String
+  profileImage String?
+  dateOfBirth  DateTime
+  mobileNumber String    @unique
+  gender       Gender?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  Order        Order[]
+  roleId       String
+  role         Role      @relation("UserRoles", fields: [roleId], references: [id])
+  Address      Address[]
+}
+
+enum Gender {
+  Male
+  Female
+}

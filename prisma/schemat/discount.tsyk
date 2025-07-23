@@ -1,0 +1,39 @@
+model Discount {
+    id                String            @id @default(cuid())
+    code              String            @unique
+    name              String
+    description       String?
+    type              DiscountType
+    value             Float
+    minOrderAmount    Float?
+    maxDiscountAmount Float?
+    usageLimit        Int?
+    usageLimitPeriod  UsageLimitPeriod?
+    usedCount         Int               @default(0)
+    isActive          Boolean           @default(true)
+    validFrom         DateTime
+    validUntil        DateTime?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    orders Order[]
+
+    products   Product[]
+    categories Category[]
+}
+
+enum DiscountType {
+    PERCENTAGE
+    FIXED_AMOUNT
+    FREE_SHIPPING
+    BUY_X_GET_Y
+}
+
+enum UsageLimitPeriod {
+    LIFETIME
+    HOURLY
+    DAILY
+    WEEKLY
+    MONTHLY
+}

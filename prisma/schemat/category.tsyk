@@ -1,0 +1,18 @@
+model Category {
+    id           String    @id @default(uuid())
+    name         String    @unique
+    description  String?
+    imageUrl     String?
+    products     Product[]
+    sections     Section[]
+    isActive     Boolean?
+    productCount Int?
+
+    // 👇 Self-relation to support nested categories
+    parentId      String?
+    parent        Category?  @relation("Subcategories", fields: [parentId], references: [id])
+    subcategories Category[] @relation("Subcategories")
+
+    discountId String?
+    Discount   Discount? @relation(fields: [discountId], references: [id])
+}

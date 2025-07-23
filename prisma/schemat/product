@@ -1,0 +1,30 @@
+enum ProductType {
+    PHYSICAL
+    DIGITAL
+}
+
+model Product {
+    id                   String      @id @default(uuid())
+    name                 String      @unique
+    description          String?
+    price                Decimal     @db.Decimal(10, 2)
+    stock                Int         @default(0)
+    productType          ProductType @default(PHYSICAL)
+    rating               Int         @default(0)
+    filePath             String?
+    downloadUrl          String?
+    image                Image[]
+    productTags          String[]
+    availableForPurchase Boolean     @default(true)
+    createdAt            DateTime    @default(now())
+    updatedAt            DateTime    @updatedAt
+    categoryId           String
+    category             Category    @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+    sections             Section[]
+
+    // 👇 Relation field for the many-to-many link
+    orderItems OrderItem[]
+
+    discountId String?
+    Discount   Discount? @relation(fields: [discountId], references: [id])
+}

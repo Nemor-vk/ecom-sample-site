@@ -1,0 +1,38 @@
+model Order {
+    id           String      @id @default(uuid())
+    createdAt    DateTime    @default(now())
+    updatedAt    DateTime    @updatedAt
+    status       OrderStatus @default(PENDING)
+    paymentTotal Decimal     @db.Decimal(10, 2)
+    userId       String
+    user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+    discount     Discount?   @relation(fields: [discountId], references: [id])
+    discountId   String?
+
+    // 👇 Relation field for the many-to-many link
+    orderItems OrderItem[]
+}
+
+// 🧩 Junction table to connect Orders and Products
+model OrderItem {
+    id         String  @id @default(uuid())
+    orderId    String
+    productId  String
+    quantity   Int     @default(1)
+    amountPaid Decimal @db.Decimal(10, 2)
+
+    order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+    product Product @relation(fields: [productId], references: [id], onDelete: Restrict)
+
+    @@unique([orderId, productId]) // prevent duplicate entries
+}
+
+enum OrderStatus {
+    PENDING
+    PROCESSING
+    SHIPPED
+    COMPLETED
+    CANCELLED
+    REFUNDED
+    RETURNED
+}
