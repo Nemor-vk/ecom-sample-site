@@ -1,5 +1,5 @@
 import { PRODUCT_TYPE } from "@/app/constants";
-import { AddressLabelPreset } from "@/generated/prisma";
+import { AddressLabelPreset, UsageLimitPeriod } from "@/generated/prisma";
 import { z } from "zod";
 
 export const productSchema = z.object({
@@ -165,5 +165,20 @@ export const dateSchema = z
 //   }
 //   return date;
 // });
-
+export const discountSchema = z.object({
+  code: z.string().min(1, "Discount code is required"),
+  name: z.string().min(1, "Display name is required"),
+  description: z.string().optional(),
+  type: z.enum(["PERCENTAGE", "FIXED_AMOUNT", "FREE_SHIPPING", "BUY_X_GET_Y"]),
+  value: z.number().optional(),
+  minOrderAmount: z.coerce.number().optional(),
+  maxDiscountAmount: z.coerce.number().optional(),
+  usageLimit: z.coerce.number().min(1),
+  usageLimitPeriod: z.nativeEnum(UsageLimitPeriod).optional(),
+  isActive: z.boolean(),
+  validFrom: z.string().min(1, "Valid from date is required"),
+  validUntil: z.string().optional(),
+  applicableProducts: z.array(z.string()),
+  applicableCategories: z.array(z.string()),
+})
 

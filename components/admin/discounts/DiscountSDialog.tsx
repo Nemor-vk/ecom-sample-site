@@ -30,114 +30,86 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { z } from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-
-const discountSchema = z.object({
-  code: z.string().min(1, "Discount code is required"),
-  name: z.string().min(1, "Display name is required"),
-  description: z.string().optional(),
-  type: z.enum(["PERCENTAGE", "FIXED_AMOUNT", "FREE_SHIPPING", "BUY_X_GET_Y"]),
-  value: z.string().optional(),
-  minOrderAmount: z.string().optional(),
-  maxDiscountAmount: z.string().optional(),
-  usageLimit: z.string().optional(),
-  isActive: z.boolean(),
-  validFrom: z.string().min(1, "Valid from date is required"),
-  validUntil: z.string().optional(),
-  applicableProducts: z.array(z.string()),
-  applicableCategories: z.array(z.string()),
-})
+import { Category, Product, UsageLimitPeriod } from "@/generated/prisma"
+import { discountSchema } from "@/lib/validations"
+import ca from "zod/v4/locales/ca.cjs"
+import { ExtendedDiscount } from "@/prisma/extendedModelTypes"
+import { fi } from "date-fns/locale"
+import { set } from "date-fns"
 
 type DiscountFormValues = z.infer<typeof discountSchema>
 
-interface Discount {
-  id: string
-  code: string
-  name: string
-  description?: string
-  type: "PERCENTAGE" | "FIXED_AMOUNT" | "FREE_SHIPPING" | "BUY_X_GET_Y"
-  value: number
-  minOrderAmount?: number
-  maxDiscountAmount?: number
-  usageLimit?: number
-  usedCount: number
-  isActive: boolean
-  validFrom: string
-  validUntil?: string
-  applicableProducts: string[]
-  applicableCategories: string[]
-}
+// interface Discount {
+//   id: string
+//   code: string
+//   name: string
+//   description?: string
+//   type: "PERCENTAGE" | "FIXED_AMOUNT" | "FREE_SHIPPING" | "BUY_X_GET_Y"
+//   value: number
+//   minOrderAmount?: number
+//   maxDiscountAmount?: number
+//   usageLimit?: number
+//   usedCount: number
+//   isActive: boolean
+//   validFrom: string
+//   validUntil?: string
+//   applicableProducts: []
+//   applicableCategories: []
+// }
 
 interface DiscountDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  discount?: Discount | null
+  discount?: ExtendedDiscount | null
   onSuccess: () => void
 }
 
 export function DiscountDialog({ open, onOpenChange, discount, onSuccess }: DiscountDialogProps) {
-  const [products, setProducts] = useState<any[]>([])
-  const [categories, setCategories] = useState<string[]>([])
+  // const [discount, setDiscount] = useState(discountValues)
+  const [products, setProducts] = useState<Product[]>([])
+  const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState(false)
-
-  const defaultValues: DiscountFormValues = {
-    code: "",
-    name: "",
-    description: "",
-    type: "PERCENTAGE",
-    value: "",
-    minOrderAmount: "",
-    maxDiscountAmount: "",
-    usageLimit: "",
-    isActive: true,
-    validFrom: new Date().toISOString().split("T")[0],
-    validUntil: "",
-    applicableProducts: [],
-    applicableCategories: [],
-  }
-
-  const form = useForm<DiscountFormValues>({
-    resolver: zodResolver(discountSchema),
-    defaultValues,
-  })
-
-  // Populate form when editing
-  useEffect(() => {
-    if (discount) {
-      form.reset({
-        code: discount.code,
-        name: discount.name,
-        description: discount.description || "",
-        type: discount.type,
-        value: discount.value.toString(),
-        minOrderAmount: discount.minOrderAmount?.toString() || "",
-        maxDiscountAmount: discount.maxDiscountAmount?.toString() || "",
-        usageLimit: discount.usageLimit?.toString() || "",
-        isActive: discount.isActive,
-        validFrom: discount.validFrom.split("T")[0],
-        validUntil: discount.validUntil?.split("T")[0] || "",
-        applicableProducts: discount.applicableProducts,
-        applicableCategories: discount.applicableCategories,
-      })
-    } else {
-      form.reset(defaultValues)
-    }
-    // eslint-disable-next-line
-  }, [discount, open])
-
-  useEffect(() => {
+   
+   useEffect(() => {
+    // console.log(
+    //   "Resetting form with discount:",
+    //   discount?.code,
+    //   form,
+    //   form.getValues()
+    // );
     if (open) {
-      fetchProducts()
-      fetchCategories()
+      fetchProducts();
+      fetchCategories();
+      // setDiscount(discountValues);
     }
     // eslint-disable-next-line
-  }, [open])
+   }, [open, discount]);
 
+   
+   const form = useForm<DiscountFormValues>({
+     resolver: zodResolver(discountSchema),
+     defaultValues:{
+       code: discount?.code ?? "",
+       name: discount?.name ?? "",
+       description: discount?.description ?? "",
+       type: discount?.type,
+       value: discount?.value ?? 0,
+       minOrderAmount: discount?.minOrderAmount ?? 0,
+       maxDiscountAmount: discount?.maxDiscountAmount ?? 0,
+       usageLimit: discount?.usageLimit ?? 1,
+       isActive: discount?.isActive ?? true,
+       validFrom: new Date(discount?.validFrom ?? Date.now()).toISOString().split("T")[0],
+       validUntil: discount?.validUntil ? new Date(discount.validUntil).toISOString().split("T")[0] : "",
+       applicableProducts: discount?.products ? discount.products.map(product => product.id) : [],
+       applicableCategories: discount?.categories ? discount.categories.map(category => category.id) : [],
+      },
+    })
   const fetchProducts = async () => {
     try {
-      const response = await fetch("/api/products?limit=100")
+      const response = await fetch("/api/product")
       if (response.ok) {
         const data = await response.json()
-        setProducts(data.products || [])
+        setProducts(data|| [])
       }
     } catch (error) {
       console.error("Failed to fetch products:", error)
@@ -146,18 +118,23 @@ export function DiscountDialog({ open, onOpenChange, discount, onSuccess }: Disc
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch("/api/categories?limit=100")
+      const response = await fetch("/api/categories")
       if (response.ok) {
         const data = await response.json()
-        setCategories(data.categories?.map((c: any) => c.name) || [])
+        setCategories(data|| [])
       }
     } catch (error) {
       console.error("Failed to fetch categories:", error)
     }
   }
 
+  // Handle form submission
+  // This function will be called when the form is submitted
   const onSubmit = async (values: DiscountFormValues) => {
     setLoading(true)
+
+    console.log("Submitting discount:", values)
+
     try {
       const url = discount ? `/api/discounts/${discount.id}` : "/api/discounts"
       const method = discount ? "PUT" : "POST"
@@ -176,9 +153,12 @@ export function DiscountDialog({ open, onOpenChange, discount, onSuccess }: Disc
         body: JSON.stringify(payload),
       })
       if (!response.ok) throw new Error("Failed to save discount")
+      
+      // Sucess notification
       toast.success("Success", {
         description: `Discount ${discount ? "updated" : "created"} successfully`,
       })
+
       onSuccess()
       onOpenChange(false)
     } catch {
@@ -186,6 +166,21 @@ export function DiscountDialog({ open, onOpenChange, discount, onSuccess }: Disc
         description: `Failed to ${discount ? "update" : "create"} discount`,
       })
     } finally {
+      form.reset({
+        code: "",
+        name: "",
+        description: "",
+        type: "PERCENTAGE",
+        value: 0,
+        minOrderAmount: 0,
+        maxDiscountAmount: 0,
+        usageLimit: 1,
+        isActive: true,
+        validFrom: new Date().toISOString().split("T")[0],
+        validUntil: "",
+        applicableProducts: [],
+        applicableCategories: [],
+      })  
       setLoading(false)
     }
   }
@@ -203,16 +198,16 @@ export function DiscountDialog({ open, onOpenChange, discount, onSuccess }: Disc
       form.getValues("applicableProducts").filter((id) => id !== productId)
     )
   }
-  const addCategory = (category: string) => {
+  const addCategory = (categoryId: string) => {
     const current = form.getValues("applicableCategories")
-    if (!current.includes(category)) {
-      form.setValue("applicableCategories", [...current, category])
+    if (!current.includes(categoryId)) {
+      form.setValue("applicableCategories", [...current, categoryId])
     }
   }
-  const removeCategory = (category: string) => {
+  const removeCategory = (categoryId: string) => {
     form.setValue(
       "applicableCategories",
-      form.getValues("applicableCategories").filter((c) => c !== category)
+      form.getValues("applicableCategories").filter((c) => c !== categoryId)
     )
   }
 
@@ -220,9 +215,13 @@ export function DiscountDialog({ open, onOpenChange, discount, onSuccess }: Disc
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto hide-scrollbar">
         <DialogHeader>
-          <DialogTitle>{discount ? "Edit Discount" : "Create New Discount"}</DialogTitle>
+          <DialogTitle>
+            {discount ? "Edit Discount" : "Create New Discount"}
+          </DialogTitle>
           <DialogDescription>
-            {discount ? "Update discount details" : "Create a new discount code or promotional offer"}
+            {discount
+              ? "Update discount details"
+              : "Create a new discount code or promotional offer"}
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -237,8 +236,10 @@ export function DiscountDialog({ open, onOpenChange, discount, onSuccess }: Disc
                     <FormControl>
                       <Input
                         {...field}
-                        onChange={(e) => field.onChange(e.target.value.toUpperCase())}
-                        placeholder="SAVE20"
+                        onChange={(e) =>
+                          field.onChange(e.target.value.toUpperCase())
+                        }
+                        placeholder={field.value || "SAVE20"}
                         required
                       />
                     </FormControl>
@@ -253,7 +254,11 @@ export function DiscountDialog({ open, onOpenChange, discount, onSuccess }: Disc
                   <FormItem>
                     <FormLabel>Display Name *</FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder="20% Off Summer Sale" required />
+                      <Input
+                        {...field}
+                        placeholder={field.value || "20% Off Summer Sale"}
+                        required
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -267,7 +272,10 @@ export function DiscountDialog({ open, onOpenChange, discount, onSuccess }: Disc
                 <FormItem>
                   <FormLabel>Description</FormLabel>
                   <FormControl>
-                    <Textarea {...field} placeholder="Save 20% on all summer items" />
+                    <Textarea
+                      {...field}
+                      placeholder={field.value || "Save 20% on all summer items"}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -282,14 +290,18 @@ export function DiscountDialog({ open, onOpenChange, discount, onSuccess }: Disc
                     <FormLabel>Discount Type *</FormLabel>
                     <Select value={field.value} onValueChange={field.onChange}>
                       <FormControl>
-                        <SelectTrigger>
-                          <SelectValue />
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder={field.value || "Select discount type"} />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
                         <SelectItem value="PERCENTAGE">Percentage</SelectItem>
-                        <SelectItem value="FIXED_AMOUNT">Fixed Amount</SelectItem>
-                        <SelectItem value="FREE_SHIPPING">Free Shipping</SelectItem>
+                        <SelectItem value="FIXED_AMOUNT">
+                          Fixed Amount
+                        </SelectItem>
+                        <SelectItem value="FREE_SHIPPING">
+                          Free Shipping
+                        </SelectItem>
                         <SelectItem value="BUY_X_GET_Y">Buy X Get Y</SelectItem>
                       </SelectContent>
                     </Select>
@@ -315,7 +327,10 @@ export function DiscountDialog({ open, onOpenChange, discount, onSuccess }: Disc
                         {...field}
                         type="number"
                         step="0.01"
-                        placeholder={form.watch("type") === "PERCENTAGE" ? "20" : "10.00"}
+                        placeholder={
+                          // form.watch("type") === "PERCENTAGE" ? "20" : "10.00"
+                          field.value?.toString() || (form.watch("type") === "PERCENTAGE" ? "20" : "10.00")
+                        }
                         required={form.watch("type") !== "FREE_SHIPPING"}
                         disabled={form.watch("type") === "FREE_SHIPPING"}
                       />
@@ -333,7 +348,12 @@ export function DiscountDialog({ open, onOpenChange, discount, onSuccess }: Disc
                   <FormItem>
                     <FormLabel>Minimum Order Amount ($)</FormLabel>
                     <FormControl>
-                      <Input {...field} type="number" step="0.01" placeholder="50.00" />
+                      <Input
+                        {...field}
+                        type="number"
+                        step="0.01"
+                        placeholder={field.value?.toString() || "50.00"}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -346,7 +366,12 @@ export function DiscountDialog({ open, onOpenChange, discount, onSuccess }: Disc
                   <FormItem>
                     <FormLabel>Maximum Discount Amount ($)</FormLabel>
                     <FormControl>
-                      <Input {...field} type="number" step="0.01" placeholder="100.00" />
+                      <Input
+                        {...field}
+                        type="number"
+                        step="0.01"
+                        placeholder={field.value?.toString() || "100.00"}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -374,7 +399,7 @@ export function DiscountDialog({ open, onOpenChange, discount, onSuccess }: Disc
                   <FormItem>
                     <FormLabel>Valid Until</FormLabel>
                     <FormControl>
-                      <Input {...field} type="date" />
+                      <Input {...field} type="date" placeholder={field.value?.toString() || ""} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -389,107 +414,186 @@ export function DiscountDialog({ open, onOpenChange, discount, onSuccess }: Disc
                   <FormItem>
                     <FormLabel>Usage Limit</FormLabel>
                     <FormControl>
-                      <Input {...field} type="number" placeholder="100" />
+                      <Input {...field} type="number" placeholder={field.value?.toString() || "100"} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <div className="flex items-center space-x-2 pt-8">
-                <FormField
-                  control={form.control}
-                  name="isActive"
-                  render={({ field }) => (
-                    <FormItem className="flex items-center gap-2">
+              <FormField
+                control={form.control}
+                name="usageLimitPeriod"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Usage Limit Period</FormLabel>
+                    <Select value={field.value} onValueChange={field.onChange}>
                       <FormControl>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                          id="isActive"
-                        />
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder={field.value || "Select period"} />
+                        </SelectTrigger>
                       </FormControl>
-                      <FormLabel htmlFor="isActive">Active</FormLabel>
-                    </FormItem>
-                  )}
-                />
-              </div>
+                      <SelectContent>
+                        {Object.values(UsageLimitPeriod).map((period) => (
+                          <SelectItem key={period} value={period}>
+                            {period.charAt(0).toUpperCase() +
+                              period.slice(1).toLowerCase()}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
-            <div className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Applicable Products</CardTitle>
-                  <CardDescription>Leave empty to apply to all products</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <Select onValueChange={addProduct}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Add product" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {products
-                        .filter((p) => !form.watch("applicableProducts").includes(p.id))
-                        .map((product) => (
-                          <SelectItem key={product.id} value={product.id}>
-                            {product.name}
-                          </SelectItem>
-                        ))}
-                    </SelectContent>
-                  </Select>
-                  <div className="flex flex-wrap gap-2">
-                    {form.watch("applicableProducts").map((productId) => {
-                      const product = products.find((p) => p.id === productId)
-                      return (
-                        <Badge key={productId} variant="secondary" className="flex items-center gap-1">
-                          {product?.name || productId}
-                          <X className="h-3 w-3 cursor-pointer" onClick={() => removeProduct(productId)} />
-                        </Badge>
-                      )
-                    })}
-                  </div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Applicable Categories</CardTitle>
-                  <CardDescription>Leave empty to apply to all categories</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <Select onValueChange={addCategory}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Add category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {categories
-                        .filter((c) => !form.watch("applicableCategories").includes(c))
-                        .map((category) => (
-                          <SelectItem key={category} value={category}>
-                            {category}
-                          </SelectItem>
-                        ))}
-                    </SelectContent>
-                  </Select>
-                  <div className="flex flex-wrap gap-2">
-                    {form.watch("applicableCategories").map((category) => (
-                      <Badge key={category} variant="secondary" className="flex items-center gap-1">
-                        {category}
-                        <X className="h-3 w-3 cursor-pointer" onClick={() => removeCategory(category)} />
-                      </Badge>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+            <FormField
+              control={form.control}
+              name="isActive"
+              render={({ field }) => (
+                <FormItem className="flex items-center gap-2">
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                      id="isActive"
+                    />
+                  </FormControl>
+                  <FormLabel htmlFor="isActive">Active</FormLabel>
+                </FormItem>
+              )}
+            />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <FormField
+                control={form.control}
+                name="applicableProducts"
+                render={() => (
+                  <FormItem>
+                    <FormLabel>Applicable Products</FormLabel>
+                    <FormDescription>
+                      Leave empty to apply to all products
+                    </FormDescription>
+                    <Select onValueChange={addProduct}>
+                      <FormControl>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder={ "Add product"} />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {products
+                          .filter((p) => !form.watch("applicableProducts").includes(p.id))
+                          .map((product) => (
+                            <SelectItem key={product.id} value={product.id}>
+                              {product.name}
+                            </SelectItem>
+                          ))}
+                      </SelectContent>
+                    </Select>
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {form.watch("applicableProducts").length === 0 && (
+                        <span className="text-muted-foreground text-xs">No products selected</span>
+                      )}
+                      {form.watch("applicableProducts").map((productId) => {
+                        const product = products.find((p) => p.id === productId);
+                        return (
+                          <Badge
+                            key={productId}
+                            variant="secondary"
+                            className="flex items-center gap-1 px-2 py-1 text-xs"
+                          >
+                            {product?.name || productId}
+                            <button
+                              type="button"
+                              className="ml-1 text-red-500 hover:text-red-700"
+                              onClick={() => removeProduct(productId)}
+                              aria-label="Remove product"
+                            >
+                              <X className="h-3 w-3" />
+                            </button>
+                          </Badge>
+                        );
+                      })}
+                    </div>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="applicableCategories"
+                render={() => (
+                  <FormItem>
+                    <FormLabel>Applicable Categories</FormLabel>
+                    <FormDescription>
+                      Leave empty to apply to all categories
+                    </FormDescription>
+                    <Select onValueChange={addCategory}>
+                      <FormControl>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Add category" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {categories
+                          .filter((c) => !form.watch("applicableCategories").includes(c.id))
+                          .map((category) => (
+                            <SelectItem key={category.id} value={category.id}>
+                              <div className="flex items-center justify-between">
+                                <span>{category.name}</span>
+                                {form.watch("applicableCategories").includes(category.id) && (
+                                  <svg className="w-4 h-4 text-green-500 ml-2" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                                )}
+                              </div>
+                            </SelectItem>
+                          ))}
+                      </SelectContent>
+                    </Select>
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {form.watch("applicableCategories").length === 0 && (
+                        <span className="text-muted-foreground text-xs">No categories selected</span>
+                      )}
+                      {form.watch("applicableCategories").map((categoryId) => {
+                        const category = categories.find((c) => c.id === categoryId);
+                        return (
+                          <Badge
+                            key={categoryId}
+                            variant="secondary"
+                            className="flex items-center gap-1 px-2 py-1 text-xs"
+                          >
+                            {category?.name || categoryId}
+                            <button
+                              type="button"
+                              className="ml-1 text-red-500 hover:text-red-700"
+                              onClick={() => removeCategory(categoryId)}
+                              aria-label="Remove category"
+                            >
+                              <X className="h-3 w-3" />
+                            </button>
+                          </Badge>
+                        );
+                      })}
+                    </div>
+                  </FormItem>
+                )}
+              />
             </div>
             <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => onOpenChange(false)}
+              >
                 Cancel
               </Button>
               <Button type="submit" disabled={loading}>
-                {loading ? "Saving..." : discount ? "Update Discount" : "Create Discount"}
+                {loading
+                  ? "Saving..."
+                  : discount
+                  ? "Update Discount"
+                  : "Create Discount"}
               </Button>
             </DialogFooter>
           </form>
         </Form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

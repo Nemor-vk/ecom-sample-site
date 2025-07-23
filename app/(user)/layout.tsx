@@ -15,7 +15,6 @@ const layout = async ({children}:{children:ReactNode}) => {
 
   const ironSession = await getIronSessionDecodedCookie();
   const session = await auth();
-  console.log("IRON SESSION USER data, /user/profile", ironSession)
 
   if (!session?.user || !ironSession.isAuthenticated) redirect('/')
 

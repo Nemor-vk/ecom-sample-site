@@ -30,38 +30,17 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-
-interface Discount {
-  id: string
-  code: string
-  name: string
-  description?: string
-  type: "PERCENTAGE" | "FIXED_AMOUNT" | "FREE_SHIPPING" | "BUY_X_GET_Y"
-  value: number
-  minOrderAmount?: number
-  maxDiscountAmount?: number
-  usageLimit?: number
-  usedCount: number
-  isActive: boolean
-  validFrom: string
-  validUntil?: string
-  applicableProducts: string[]
-  applicableCategories: string[]
-  createdAt: string
-  updatedAt: string
-  _count: {
-    orders: number
-  }
-}
+import { Discount } from "@/generated/prisma"
+import { ExtendedDiscount } from "@/prisma/extendedModelTypes"
 
 export function DiscountsManagement() {
-  const [discounts, setDiscounts] = useState<Discount[]>([])
+  const [discounts, setDiscounts] = useState<ExtendedDiscount[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
   const [typeFilter, setTypeFilter] = useState("all")
   const [dialogOpen, setDialogOpen] = useState(false)
-  const [editingDiscount, setEditingDiscount] = useState<Discount | null>(null)
+  const [editingDiscount, setEditingDiscount] = useState<ExtendedDiscount | null>(null)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [discountToDelete, setDiscountToDelete] = useState<string | null>(null)
   const [pagination, setPagination] = useState({
@@ -82,12 +61,12 @@ export function DiscountsManagement() {
         type: typeFilter,
       })
 
-      const response = await fetch(`/api/discounts?${params}`)
+      const response = await fetch(`/api/discounts`)
       if (!response.ok) throw new Error("Failed to fetch discounts")
 
       const data = await response.json()
       setDiscounts(data.discounts)
-      setPagination(data.pagination)
+      // setPagination(data.pagination)
     } catch (error) {
       toast.error("Error", {
         description: "Failed to fetch discounts",
@@ -99,6 +78,7 @@ export function DiscountsManagement() {
 
   useEffect(() => {
     fetchDiscounts()
+    console.log("Fetched discounts:", editingDiscount)
   }, [pagination.page, searchTerm, statusFilter, typeFilter])
 
   const handleDelete = async (id: string) => {
@@ -157,7 +137,7 @@ export function DiscountsManagement() {
     }
   }
 
-  const columns: ColumnDef<Discount>[] = [
+  const columns: ColumnDef<ExtendedDiscount>[] = [
     {
       accessorKey: "code",
       header: "Code",
@@ -212,9 +192,9 @@ export function DiscountsManagement() {
       },
     },
     {
-      accessorKey: "_count.orders",
+      accessorKey: "orders",
       header: "Orders",
-      cell: ({ row }) => row.original._count.orders,
+      cell: ({ row }) => row.original.orders,
     },
     {
       accessorKey: "validFrom",
@@ -316,7 +296,10 @@ export function DiscountsManagement() {
             <Download className="" />
             Export
           </Button>
-          <Button onClick={() => setDialogOpen(true)}>
+          <Button onClick={() => {
+            setEditingDiscount(null)
+            setDialogOpen(true)
+          }}>
             <Plus className="" />
             Add Discount
           </Button>
@@ -339,7 +322,7 @@ export function DiscountsManagement() {
         </CardContent>
       </Card>
 
-      <DiscountDialog
+      {(editingDiscount || dialogOpen )&& <DiscountDialog
         open={dialogOpen}
         onOpenChange={setDialogOpen}
         discount={editingDiscount}
@@ -347,7 +330,7 @@ export function DiscountsManagement() {
           fetchDiscounts()
           setEditingDiscount(null)
         }}
-      />
+      />}
 
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>

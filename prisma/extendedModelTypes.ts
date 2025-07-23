@@ -39,5 +39,6 @@ export type ExtendedPromotionalTag = Section & {
 
 export type ExtendedDiscount = Discount & {
   products: Product[],
-  categories: Category[]
+  categories: Category[],
+  orders: Order[],
 }

@@ -10,7 +10,7 @@ import Image from "next/image";
 
 const page = async () => {
   const ironSession = await getIronSessionDecodedCookie();
-  console.log("IRON SESSION USER data, /user/profile", ironSession);
+  // console.log("IRON SESSION USER data, /user/profile", ironSession);
   if (!ironSession.isAuthenticated) redirect("/");
 
   return (
