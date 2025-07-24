@@ -8,6 +8,14 @@ export interface CartItemType {
 }
 
 
+export interface OrderRequestModel  {
+  userId: string
+  paymentTotal: string
+  discountId: string | null
+  cartItems: CartItemType[]
+}
+
+
 export const mockAddresses: Address[] = [
   {
     id: "addr-1",

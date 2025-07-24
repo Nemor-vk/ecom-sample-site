@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import { ArrowLeft, Lock } from "lucide-react"
+import { AlertCircleIcon, ArrowLeft, Lock } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { calculateOrderTotals } from "@/lib/discount-utils"
 import { Address, Discount } from "@/generated/prisma"
@@ -17,6 +17,9 @@ import { useDialogStateStore } from "@/store/userPreferenceStore"
 import { useSession } from "next-auth/react"
 import { redirect } from "next/navigation"
 import { toast } from "sonner"
+import { createNewOrder, createNewOrderApi } from "@/service/orders.service"
+import { el } from "date-fns/locale"
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert"
 
 const CheckoutPage = () => {
   const {data:authSession} = useSession();
@@ -32,8 +35,15 @@ const CheckoutPage = () => {
 
         setTimeout(() => {
             redirect('/');
-        }, 2000); // Wait 2 seconds before redirecting
-    }
+      }, 1000); // Wait 2 seconds before redirecting
+  }
+  
+  if(cartItems.length <= 0) {
+    toast.warning("Cart is empty, please add items to cart before checkout.");
+
+    redirect('/cart')
+
+  }
 
 
   useEffect(() => {
@@ -113,6 +123,24 @@ const CheckoutPage = () => {
     // 1. Validate all form data
     // 2. Process payment
     // 3. Create order in database
+    const newOrder = await createNewOrderApi({
+      userId: authSession?.user?.id || "",
+      paymentTotal: calculateOrderTotals(cartItems, appliedDiscount).total.toFixed(2),
+      discountId: appliedDiscount ? appliedDiscount.id : null,
+      cartItems: cartItems,
+    });
+
+    if(newOrder) {
+      console.log("Order placed successfully:", newOrder)
+      toast.success("Order placed successfully!")
+    } else {
+      toast.error("Failed to place order. Please try again.")
+    }
+
+    setIsProcessing(false)
+    // 4. Clear cart and discount
+    useCartStore.getState().clearCart();
+    useCartStore.getState().clearDiscount();
     // 4. Send confirmation email
     // 5. Redirect to success page
     console.log("discount ", appliedDiscount)
@@ -123,7 +151,7 @@ const CheckoutPage = () => {
       payment: selectedPaymentMethod,
       discount: appliedDiscount,
     })
-    setIsProcessing(false)
+    redirect('/thankyou'); //redirect to thank you page
   }
 
   const { subtotal } = calculateOrderTotals(cartItems, appliedDiscount)

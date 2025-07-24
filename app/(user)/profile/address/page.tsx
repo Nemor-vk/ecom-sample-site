@@ -53,7 +53,7 @@ export default page
 const AddAddressDialogbox = () => {
 
   return (
-    <Dialog op>
+    <Dialog>
       <DialogTrigger asChild>
         <Button size={'container'} className="rounded-full bg-gradient-to-r from-pink-400 to-purple-400 hover:from-pink-500 hover:to-purple-500 px-5 py-2.5">
             <Plus className="w-4 h-4 mr-2" />
