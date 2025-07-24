@@ -1,16 +1,20 @@
 import { create } from "zustand";
 import { ExtendedProduct } from "@/prisma/extendedModelTypes";
 import { CartItemType } from "@/types/types";
+import { Discount } from "@/generated/prisma";
 
 // Interface for Zustand store
 interface CartItemsInterface {
   cartItems: CartItemType[];
+  discount?: Discount | null; // Optional discount field
   addToCart: (product: ExtendedProduct) => void;
   removeFromCart: (productId: string) => void;
   clearCart: () => void;
   increaseQuantity: (productId: string) => void;
   decreaseQuantity: (productId: string) => void;
   onQuantityChange: (productId: string, quantity: number) => void;
+  setDiscount: (discountObj: Discount | null) => void;
+  clearDiscount: () => void;
 }
 
 // Zustand store implementation
@@ -95,5 +99,15 @@ export const useCartStore = create<CartItemsInterface>((set) => ({
         ),
       };
     }),
+
+    setDiscount: (discountObj: Discount | null) =>
+      set(() => ({
+        discount: discountObj,
+    })),
+
+    clearDiscount: () =>
+      set(() => ({
+        discount: null,
+      })),
 
 }));

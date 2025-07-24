@@ -3,6 +3,7 @@ import NavMobile from '@/components/NavMobile'
 import React, { ReactNode, useEffect } from 'react'
 import { Toaster } from 'sonner'
 import { auth } from '../api/auth/[...nextauth]/route'
+import { Footer } from '@/components/Footer'
 
 const layout = async({children} : {children: ReactNode}) => {
 
@@ -17,6 +18,7 @@ const layout = async({children} : {children: ReactNode}) => {
         </main>
         <NavMobile/>
         <Toaster richColors />
+        <Footer/>
       </>
   )
 }

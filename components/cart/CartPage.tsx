@@ -14,13 +14,7 @@ import { useCartStore } from "@/store/cartStore"
 import { CartItemType } from "@/types/types"
 
 export default function CartPage() {
-  const {cartItems} = useCartStore();
-  // const [cartItems, setCartItems] = useState<CartItemType[]>(items || [])
-  const [appliedDiscount, setAppliedDiscount] = useState<Discount | null>(null)
-
-  const handleDiscountApply = (discount: Discount | null) => {
-    setAppliedDiscount(discount)
-  }
+  const {cartItems, discount:appliedDiscount, setDiscount} = useCartStore();
 
   const { subtotal } = calculateOrderTotals(cartItems, appliedDiscount)
 
@@ -70,8 +64,6 @@ export default function CartPage() {
         {/* Cart Summary */}
         <div className="space-y-6">
           <DiscountInput
-            onDiscountApply={handleDiscountApply}
-            appliedDiscount={appliedDiscount}
             orderTotal={subtotal}
           />
 

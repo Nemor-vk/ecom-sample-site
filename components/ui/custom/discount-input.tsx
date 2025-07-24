@@ -1,27 +1,47 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Check, Tag, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Discount } from "@/generated/prisma"
+import { toast } from "sonner"
+import { useCartStore } from "@/store/cartStore"
+import { set } from "date-fns"
 
 interface DiscountInputProps {
-  onDiscountApply: (discount: Discount | null) => void
-  appliedDiscount?: Discount | null
   orderTotal: number
 }
 
-export function DiscountInput({ onDiscountApply, appliedDiscount, orderTotal }: DiscountInputProps) {
+export function DiscountInput({ orderTotal }: DiscountInputProps) {
   const [code, setCode] = useState("")
+  const {discount:appliedDiscount, setDiscount} = useCartStore();
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
+  const [availableDiscounts, setAvailableDiscounts] = useState<Discount[]>([]);
 
-  // Mock discount codes for demonstration
-  const mockDiscounts: Discount[] = [
-  ]
+  useEffect(() => {
+    
+    async function fetchAvailableDiscounts() {
+      try {
+        const response = await fetch("/api/discounts")
+        if (!response.ok) {
+          throw new Error("Server response was not ok")
+        }
+        const data = await response.json()
+        setAvailableDiscounts(data.discounts || [])
+      } catch (error) {
+        console.error("Failed to fetch available discounts:", error);
+        toast.error("Error Occured While Applying discounts");
+        
+      }
+    }
+
+    fetchAvailableDiscounts();
+  }, [])
+  
 
   const validateDiscount = (discount: Discount): { isValid: boolean; error?: string } => {
     if (!discount.isActive) {
@@ -56,9 +76,9 @@ export function DiscountInput({ onDiscountApply, appliedDiscount, orderTotal }: 
     setError("")
 
     // Simulate API call delay
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    // await new Promise((resolve) => setTimeout(resolve, 1000))
 
-    const discount = mockDiscounts.find((d) => d.code.toLowerCase() === code.toLowerCase())
+    const discount = availableDiscounts.find((d) => d.code.toLowerCase() === code.toLowerCase())
 
     if (!discount) {
       setError("Invalid discount code")
@@ -69,16 +89,19 @@ export function DiscountInput({ onDiscountApply, appliedDiscount, orderTotal }: 
     const validation = validateDiscount(discount)
     if (!validation.isValid) {
       setError(validation.error || "Invalid discount code")
+      toast.info(validation.error || "Invalid discount code")
       setIsLoading(false)
       return
     }
 
-    onDiscountApply(discount)
+    // onDiscountApply(discount)
+    setDiscount(discount);
     setIsLoading(false)
   }
 
   const handleRemoveDiscount = () => {
-    onDiscountApply(null)
+    // onDiscountApply(null)
+    setDiscount(null);
     setCode("")
     setError("")
   }

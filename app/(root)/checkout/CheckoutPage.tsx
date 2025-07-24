@@ -20,11 +20,10 @@ import { toast } from "sonner"
 
 const CheckoutPage = () => {
   const {data:authSession} = useSession();
-  const {cartItems} = useCartStore();
+  const {cartItems, discount:appliedDiscount, setDiscount} = useCartStore();
   const [addresses, setAddresses] = useState<Address[]>([])
   const [selectedAddressId, setSelectedAddressId] = useState<string>(addresses[0]?.id || "")
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string>("card")
-  const [appliedDiscount, setAppliedDiscount] = useState<Discount | null>(null)
   const [isProcessing, setIsProcessing] = useState(false)
   const {isOpen, open, close} = useDialogStateStore()
 
@@ -104,10 +103,6 @@ const CheckoutPage = () => {
     }
   };
 
-  const handleDiscountApply = (discount: Discount | null) => {
-    setAppliedDiscount(discount)
-  }
-
   const handlePlaceOrder = async () => {
     setIsProcessing(true)
 
@@ -169,8 +164,6 @@ const CheckoutPage = () => {
         {/* Order Summary & Place Order */}
         <div className="space-y-6">
           <DiscountInput
-            onDiscountApply={handleDiscountApply}
-            appliedDiscount={appliedDiscount}
             orderTotal={subtotal}
           />
 

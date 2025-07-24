@@ -5,6 +5,7 @@ import { PROMO_CARD } from "../constants";
 import Cards from "@/components/Cards";
 import DisplayCollage from "@/components/DisplayCollage";
 import { getAllPromotionalTags } from "@/prisma/repository/sectionRepo";
+import { ProductSlider } from "@/components/ProductSlider";
 
 export default async function Home() {
 
@@ -14,15 +15,19 @@ export default async function Home() {
     <div className="flex flex-col items-center">
     <Hero/>
     <FeaturedCat/>
-    {promotionalTags && promotionalTags.map((promotion) => (
+    {/* {promotionalTags && promotionalTags.map((promotion) => (
       <ProductSlide key={promotion.name} pageTitle={promotion.name} featuredProducts={promotion.products} description={promotion.description || ""} />
-    ))}
+    ))} */}
+    <ProductSlider title="Trending Products" subtitle="Discover the latest trends in fashion and accessories" />
     <DisplayCollage/>
     <div className="flex flex-col md:flex-row gap-8 py-10 items-center justify-center w-[95%]">
       {PROMO_CARD.map((promoCard, index) => (
         <Cards key={index} {...promoCard}/>
       ))}
     </div>
+
+      <ProductSlider title="Trending Products" subtitle="Discover the latest trends in fashion and accessories" />
+    <ProductSlider title="Trending Products" subtitle="Discover the latest trends in fashion and accessories" />
     </div>
   );
 }
