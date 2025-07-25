@@ -25,12 +25,12 @@ export type ExtendedCategory = Category & {
 export type ExtendedOrder = Order & {
   orderItems: ExtendedOrderItem[],
   user: User,
-  Discount?: Discount,
+  discount: Discount  | null,
 }
 
 export type ExtendedOrderItem = OrderItem & {
-  product: ExtendedProduct,
-  order: Order
+  product: Product,
+  // order: Order
 }
 
 export type ExtendedPromotionalTag = Section & {

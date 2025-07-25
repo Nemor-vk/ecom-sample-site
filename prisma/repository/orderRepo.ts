@@ -46,3 +46,23 @@ export async function createNewOrder({ cartItems, userId, discountId, paymentTot
 
 return newOrder;
 }
+
+export async function findOrdersByUserId(userId: string): Promise<ExtendedOrder[]> {
+  const userOrders = await db.order.findMany({
+    where: {
+      userId,
+    },
+    include: {
+      orderItems: {
+        include: {
+          product: true,
+          order: true, // Include the order to access its properties
+        },
+      },
+      user: true,
+      discount: true,
+    },
+  });
+
+  return userOrders;
+}

@@ -1,4 +1,5 @@
-import { Boxes, ChartNoAxesCombined, CirclePercent, Layers, LayoutDashboard, Palette, ScanBarcode, Search, Settings, Settings2, UsersRound } from "lucide-react";
+import { signOutAndDeleteSessions } from "@/lib/clientLogin";
+import { Boxes, ChartNoAxesCombined, CirclePercent, Layers, LayoutDashboard, LogOut, Palette, ScanBarcode, Search, Settings, Settings2, UsersRound } from "lucide-react";
 
   // Admin Menu items.
   export const ADMIN_ITEMS = [
@@ -56,5 +57,12 @@ import { Boxes, ChartNoAxesCombined, CirclePercent, Layers, LayoutDashboard, Pal
       label: "Settings",
       url: "/admin/settings",
       icon: Settings,
+    },
+    {
+      label: "Sign Out",
+      icon: LogOut,
+      isSignOut: true,
+      onClick: () => signOutAndDeleteSessions(),
+      url:'#'
     },
   ]

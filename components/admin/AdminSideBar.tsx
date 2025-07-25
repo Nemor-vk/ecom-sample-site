@@ -10,9 +10,10 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
   } from "@/components/ui/sidebar"
-import { Calendar, Home, Inbox, Layers, LayoutDashboard, LayoutGrid, ScanBarcode, Search, Settings } from 'lucide-react'
+import { Calendar, Home, Inbox, Layers, LayoutDashboard, LayoutGrid, LogOut, ScanBarcode, Search, Settings } from 'lucide-react'
 import Link from 'next/link'
 import { ADMIN_ITEMS } from '@/app/constants/adminConstants'
+import { signOutAndDeleteSessions } from '@/lib/clientLogin'
 
 const AdminSideBar = () => {
   return (
@@ -34,6 +35,12 @@ const AdminSideBar = () => {
                 </SidebarMenuButton>
               </SidebarMenuItem>
             ))}
+            <SidebarMenuItem>
+                <SidebarMenuButton onClick={signOutAndDeleteSessions} className='flex items-center gap-3 p-4 py-7 rounded-xl text-base'>
+                    <LogOut/>
+                    <span>Sign Out</span>
+                </SidebarMenuButton>
+            </SidebarMenuItem>
           </SidebarMenu>
         </SidebarGroupContent>
       </SidebarGroup>

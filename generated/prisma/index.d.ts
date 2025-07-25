@@ -3597,7 +3597,7 @@ export namespace Prisma {
     sections?: boolean | Category$sectionsArgs<ExtArgs>
     parent?: boolean | Category$parentArgs<ExtArgs>
     subcategories?: boolean | Category$subcategoriesArgs<ExtArgs>
-    Discount?: boolean | Category$DiscountArgs<ExtArgs>
+    discount?: boolean | Category$discountArgs<ExtArgs>
     _count?: boolean | CategoryCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["category"]>
 
@@ -3611,7 +3611,7 @@ export namespace Prisma {
     parentId?: boolean
     discountId?: boolean
     parent?: boolean | Category$parentArgs<ExtArgs>
-    Discount?: boolean | Category$DiscountArgs<ExtArgs>
+    discount?: boolean | Category$discountArgs<ExtArgs>
   }, ExtArgs["result"]["category"]>
 
   export type CategorySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -3624,7 +3624,7 @@ export namespace Prisma {
     parentId?: boolean
     discountId?: boolean
     parent?: boolean | Category$parentArgs<ExtArgs>
-    Discount?: boolean | Category$DiscountArgs<ExtArgs>
+    discount?: boolean | Category$discountArgs<ExtArgs>
   }, ExtArgs["result"]["category"]>
 
   export type CategorySelectScalar = {
@@ -3644,16 +3644,16 @@ export namespace Prisma {
     sections?: boolean | Category$sectionsArgs<ExtArgs>
     parent?: boolean | Category$parentArgs<ExtArgs>
     subcategories?: boolean | Category$subcategoriesArgs<ExtArgs>
-    Discount?: boolean | Category$DiscountArgs<ExtArgs>
+    discount?: boolean | Category$discountArgs<ExtArgs>
     _count?: boolean | CategoryCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type CategoryIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     parent?: boolean | Category$parentArgs<ExtArgs>
-    Discount?: boolean | Category$DiscountArgs<ExtArgs>
+    discount?: boolean | Category$discountArgs<ExtArgs>
   }
   export type CategoryIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     parent?: boolean | Category$parentArgs<ExtArgs>
-    Discount?: boolean | Category$DiscountArgs<ExtArgs>
+    discount?: boolean | Category$discountArgs<ExtArgs>
   }
 
   export type $CategoryPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3663,7 +3663,7 @@ export namespace Prisma {
       sections: Prisma.$SectionPayload<ExtArgs>[]
       parent: Prisma.$CategoryPayload<ExtArgs> | null
       subcategories: Prisma.$CategoryPayload<ExtArgs>[]
-      Discount: Prisma.$DiscountPayload<ExtArgs> | null
+      discount: Prisma.$DiscountPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -4072,7 +4072,7 @@ export namespace Prisma {
     sections<T extends Category$sectionsArgs<ExtArgs> = {}>(args?: Subset<T, Category$sectionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     parent<T extends Category$parentArgs<ExtArgs> = {}>(args?: Subset<T, Category$parentArgs<ExtArgs>>): Prisma__CategoryClient<$Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     subcategories<T extends Category$subcategoriesArgs<ExtArgs> = {}>(args?: Subset<T, Category$subcategoriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    Discount<T extends Category$DiscountArgs<ExtArgs> = {}>(args?: Subset<T, Category$DiscountArgs<ExtArgs>>): Prisma__DiscountClient<$Result.GetResult<Prisma.$DiscountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    discount<T extends Category$discountArgs<ExtArgs> = {}>(args?: Subset<T, Category$discountArgs<ExtArgs>>): Prisma__DiscountClient<$Result.GetResult<Prisma.$DiscountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4597,9 +4597,9 @@ export namespace Prisma {
   }
 
   /**
-   * Category.Discount
+   * Category.discount
    */
-  export type Category$DiscountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Category$discountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Discount
      */
@@ -9595,7 +9595,7 @@ export namespace Prisma {
     category?: boolean | CategoryDefaultArgs<ExtArgs>
     sections?: boolean | Product$sectionsArgs<ExtArgs>
     orderItems?: boolean | Product$orderItemsArgs<ExtArgs>
-    Discount?: boolean | Product$DiscountArgs<ExtArgs>
+    discount?: boolean | Product$discountArgs<ExtArgs>
     _count?: boolean | ProductCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["product"]>
 
@@ -9616,7 +9616,7 @@ export namespace Prisma {
     categoryId?: boolean
     discountId?: boolean
     category?: boolean | CategoryDefaultArgs<ExtArgs>
-    Discount?: boolean | Product$DiscountArgs<ExtArgs>
+    discount?: boolean | Product$discountArgs<ExtArgs>
   }, ExtArgs["result"]["product"]>
 
   export type ProductSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -9636,7 +9636,7 @@ export namespace Prisma {
     categoryId?: boolean
     discountId?: boolean
     category?: boolean | CategoryDefaultArgs<ExtArgs>
-    Discount?: boolean | Product$DiscountArgs<ExtArgs>
+    discount?: boolean | Product$discountArgs<ExtArgs>
   }, ExtArgs["result"]["product"]>
 
   export type ProductSelectScalar = {
@@ -9663,16 +9663,16 @@ export namespace Prisma {
     category?: boolean | CategoryDefaultArgs<ExtArgs>
     sections?: boolean | Product$sectionsArgs<ExtArgs>
     orderItems?: boolean | Product$orderItemsArgs<ExtArgs>
-    Discount?: boolean | Product$DiscountArgs<ExtArgs>
+    discount?: boolean | Product$discountArgs<ExtArgs>
     _count?: boolean | ProductCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ProductIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     category?: boolean | CategoryDefaultArgs<ExtArgs>
-    Discount?: boolean | Product$DiscountArgs<ExtArgs>
+    discount?: boolean | Product$discountArgs<ExtArgs>
   }
   export type ProductIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     category?: boolean | CategoryDefaultArgs<ExtArgs>
-    Discount?: boolean | Product$DiscountArgs<ExtArgs>
+    discount?: boolean | Product$discountArgs<ExtArgs>
   }
 
   export type $ProductPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -9682,7 +9682,7 @@ export namespace Prisma {
       category: Prisma.$CategoryPayload<ExtArgs>
       sections: Prisma.$SectionPayload<ExtArgs>[]
       orderItems: Prisma.$OrderItemPayload<ExtArgs>[]
-      Discount: Prisma.$DiscountPayload<ExtArgs> | null
+      discount: Prisma.$DiscountPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -10098,7 +10098,7 @@ export namespace Prisma {
     category<T extends CategoryDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CategoryDefaultArgs<ExtArgs>>): Prisma__CategoryClient<$Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     sections<T extends Product$sectionsArgs<ExtArgs> = {}>(args?: Subset<T, Product$sectionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     orderItems<T extends Product$orderItemsArgs<ExtArgs> = {}>(args?: Subset<T, Product$orderItemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrderItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    Discount<T extends Product$DiscountArgs<ExtArgs> = {}>(args?: Subset<T, Product$DiscountArgs<ExtArgs>>): Prisma__DiscountClient<$Result.GetResult<Prisma.$DiscountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    discount<T extends Product$discountArgs<ExtArgs> = {}>(args?: Subset<T, Product$discountArgs<ExtArgs>>): Prisma__DiscountClient<$Result.GetResult<Prisma.$DiscountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -10611,9 +10611,9 @@ export namespace Prisma {
   }
 
   /**
-   * Product.Discount
+   * Product.discount
    */
-  export type Product$DiscountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Product$discountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Discount
      */
@@ -15579,7 +15579,7 @@ export namespace Prisma {
     sections?: SectionListRelationFilter
     parent?: XOR<CategoryNullableScalarRelationFilter, CategoryWhereInput> | null
     subcategories?: CategoryListRelationFilter
-    Discount?: XOR<DiscountNullableScalarRelationFilter, DiscountWhereInput> | null
+    discount?: XOR<DiscountNullableScalarRelationFilter, DiscountWhereInput> | null
   }
 
   export type CategoryOrderByWithRelationInput = {
@@ -15595,7 +15595,7 @@ export namespace Prisma {
     sections?: SectionOrderByRelationAggregateInput
     parent?: CategoryOrderByWithRelationInput
     subcategories?: CategoryOrderByRelationAggregateInput
-    Discount?: DiscountOrderByWithRelationInput
+    discount?: DiscountOrderByWithRelationInput
   }
 
   export type CategoryWhereUniqueInput = Prisma.AtLeast<{
@@ -15614,7 +15614,7 @@ export namespace Prisma {
     sections?: SectionListRelationFilter
     parent?: XOR<CategoryNullableScalarRelationFilter, CategoryWhereInput> | null
     subcategories?: CategoryListRelationFilter
-    Discount?: XOR<DiscountNullableScalarRelationFilter, DiscountWhereInput> | null
+    discount?: XOR<DiscountNullableScalarRelationFilter, DiscountWhereInput> | null
   }, "id" | "name">
 
   export type CategoryOrderByWithAggregationInput = {
@@ -15977,7 +15977,7 @@ export namespace Prisma {
     category?: XOR<CategoryScalarRelationFilter, CategoryWhereInput>
     sections?: SectionListRelationFilter
     orderItems?: OrderItemListRelationFilter
-    Discount?: XOR<DiscountNullableScalarRelationFilter, DiscountWhereInput> | null
+    discount?: XOR<DiscountNullableScalarRelationFilter, DiscountWhereInput> | null
   }
 
   export type ProductOrderByWithRelationInput = {
@@ -16000,7 +16000,7 @@ export namespace Prisma {
     category?: CategoryOrderByWithRelationInput
     sections?: SectionOrderByRelationAggregateInput
     orderItems?: OrderItemOrderByRelationAggregateInput
-    Discount?: DiscountOrderByWithRelationInput
+    discount?: DiscountOrderByWithRelationInput
   }
 
   export type ProductWhereUniqueInput = Prisma.AtLeast<{
@@ -16026,7 +16026,7 @@ export namespace Prisma {
     category?: XOR<CategoryScalarRelationFilter, CategoryWhereInput>
     sections?: SectionListRelationFilter
     orderItems?: OrderItemListRelationFilter
-    Discount?: XOR<DiscountNullableScalarRelationFilter, DiscountWhereInput> | null
+    discount?: XOR<DiscountNullableScalarRelationFilter, DiscountWhereInput> | null
   }, "id" | "name">
 
   export type ProductOrderByWithAggregationInput = {
@@ -16459,7 +16459,7 @@ export namespace Prisma {
     sections?: SectionCreateNestedManyWithoutCategoryInput
     parent?: CategoryCreateNestedOneWithoutSubcategoriesInput
     subcategories?: CategoryCreateNestedManyWithoutParentInput
-    Discount?: DiscountCreateNestedOneWithoutCategoriesInput
+    discount?: DiscountCreateNestedOneWithoutCategoriesInput
   }
 
   export type CategoryUncheckedCreateInput = {
@@ -16487,7 +16487,7 @@ export namespace Prisma {
     sections?: SectionUpdateManyWithoutCategoryNestedInput
     parent?: CategoryUpdateOneWithoutSubcategoriesNestedInput
     subcategories?: CategoryUpdateManyWithoutParentNestedInput
-    Discount?: DiscountUpdateOneWithoutCategoriesNestedInput
+    discount?: DiscountUpdateOneWithoutCategoriesNestedInput
   }
 
   export type CategoryUncheckedUpdateInput = {
@@ -16879,7 +16879,7 @@ export namespace Prisma {
     category: CategoryCreateNestedOneWithoutProductsInput
     sections?: SectionCreateNestedManyWithoutProductsInput
     orderItems?: OrderItemCreateNestedManyWithoutProductInput
-    Discount?: DiscountCreateNestedOneWithoutProductsInput
+    discount?: DiscountCreateNestedOneWithoutProductsInput
   }
 
   export type ProductUncheckedCreateInput = {
@@ -16921,7 +16921,7 @@ export namespace Prisma {
     category?: CategoryUpdateOneRequiredWithoutProductsNestedInput
     sections?: SectionUpdateManyWithoutProductsNestedInput
     orderItems?: OrderItemUpdateManyWithoutProductNestedInput
-    Discount?: DiscountUpdateOneWithoutProductsNestedInput
+    discount?: DiscountUpdateOneWithoutProductsNestedInput
   }
 
   export type ProductUncheckedUpdateInput = {
@@ -19675,7 +19675,7 @@ export namespace Prisma {
     image?: ImageCreateNestedManyWithoutProductInput
     sections?: SectionCreateNestedManyWithoutProductsInput
     orderItems?: OrderItemCreateNestedManyWithoutProductInput
-    Discount?: DiscountCreateNestedOneWithoutProductsInput
+    discount?: DiscountCreateNestedOneWithoutProductsInput
   }
 
   export type ProductUncheckedCreateWithoutCategoryInput = {
@@ -19745,7 +19745,7 @@ export namespace Prisma {
     products?: ProductCreateNestedManyWithoutCategoryInput
     sections?: SectionCreateNestedManyWithoutCategoryInput
     parent?: CategoryCreateNestedOneWithoutSubcategoriesInput
-    Discount?: DiscountCreateNestedOneWithoutCategoriesInput
+    discount?: DiscountCreateNestedOneWithoutCategoriesInput
   }
 
   export type CategoryUncheckedCreateWithoutSubcategoriesInput = {
@@ -19776,7 +19776,7 @@ export namespace Prisma {
     products?: ProductCreateNestedManyWithoutCategoryInput
     sections?: SectionCreateNestedManyWithoutCategoryInput
     subcategories?: CategoryCreateNestedManyWithoutParentInput
-    Discount?: DiscountCreateNestedOneWithoutCategoriesInput
+    discount?: DiscountCreateNestedOneWithoutCategoriesInput
   }
 
   export type CategoryUncheckedCreateWithoutParentInput = {
@@ -19936,7 +19936,7 @@ export namespace Prisma {
     products?: ProductUpdateManyWithoutCategoryNestedInput
     sections?: SectionUpdateManyWithoutCategoryNestedInput
     parent?: CategoryUpdateOneWithoutSubcategoriesNestedInput
-    Discount?: DiscountUpdateOneWithoutCategoriesNestedInput
+    discount?: DiscountUpdateOneWithoutCategoriesNestedInput
   }
 
   export type CategoryUncheckedUpdateWithoutSubcategoriesInput = {
@@ -20229,7 +20229,7 @@ export namespace Prisma {
     category: CategoryCreateNestedOneWithoutProductsInput
     sections?: SectionCreateNestedManyWithoutProductsInput
     orderItems?: OrderItemCreateNestedManyWithoutProductInput
-    Discount?: DiscountCreateNestedOneWithoutProductsInput
+    discount?: DiscountCreateNestedOneWithoutProductsInput
   }
 
   export type ProductUncheckedCreateWithoutImageInput = {
@@ -20285,7 +20285,7 @@ export namespace Prisma {
     category?: CategoryUpdateOneRequiredWithoutProductsNestedInput
     sections?: SectionUpdateManyWithoutProductsNestedInput
     orderItems?: OrderItemUpdateManyWithoutProductNestedInput
-    Discount?: DiscountUpdateOneWithoutProductsNestedInput
+    discount?: DiscountUpdateOneWithoutProductsNestedInput
   }
 
   export type ProductUncheckedUpdateWithoutImageInput = {
@@ -20577,7 +20577,7 @@ export namespace Prisma {
     image?: ImageCreateNestedManyWithoutProductInput
     category: CategoryCreateNestedOneWithoutProductsInput
     sections?: SectionCreateNestedManyWithoutProductsInput
-    Discount?: DiscountCreateNestedOneWithoutProductsInput
+    discount?: DiscountCreateNestedOneWithoutProductsInput
   }
 
   export type ProductUncheckedCreateWithoutOrderItemsInput = {
@@ -20664,7 +20664,7 @@ export namespace Prisma {
     image?: ImageUpdateManyWithoutProductNestedInput
     category?: CategoryUpdateOneRequiredWithoutProductsNestedInput
     sections?: SectionUpdateManyWithoutProductsNestedInput
-    Discount?: DiscountUpdateOneWithoutProductsNestedInput
+    discount?: DiscountUpdateOneWithoutProductsNestedInput
   }
 
   export type ProductUncheckedUpdateWithoutOrderItemsInput = {
@@ -20721,7 +20721,7 @@ export namespace Prisma {
     sections?: SectionCreateNestedManyWithoutCategoryInput
     parent?: CategoryCreateNestedOneWithoutSubcategoriesInput
     subcategories?: CategoryCreateNestedManyWithoutParentInput
-    Discount?: DiscountCreateNestedOneWithoutCategoriesInput
+    discount?: DiscountCreateNestedOneWithoutCategoriesInput
   }
 
   export type CategoryUncheckedCreateWithoutProductsInput = {
@@ -20888,7 +20888,7 @@ export namespace Prisma {
     sections?: SectionUpdateManyWithoutCategoryNestedInput
     parent?: CategoryUpdateOneWithoutSubcategoriesNestedInput
     subcategories?: CategoryUpdateManyWithoutParentNestedInput
-    Discount?: DiscountUpdateOneWithoutCategoriesNestedInput
+    discount?: DiscountUpdateOneWithoutCategoriesNestedInput
   }
 
   export type CategoryUncheckedUpdateWithoutProductsInput = {
@@ -21168,7 +21168,7 @@ export namespace Prisma {
     image?: ImageCreateNestedManyWithoutProductInput
     category: CategoryCreateNestedOneWithoutProductsInput
     orderItems?: OrderItemCreateNestedManyWithoutProductInput
-    Discount?: DiscountCreateNestedOneWithoutProductsInput
+    discount?: DiscountCreateNestedOneWithoutProductsInput
   }
 
   export type ProductUncheckedCreateWithoutSectionsInput = {
@@ -21206,7 +21206,7 @@ export namespace Prisma {
     products?: ProductCreateNestedManyWithoutCategoryInput
     parent?: CategoryCreateNestedOneWithoutSubcategoriesInput
     subcategories?: CategoryCreateNestedManyWithoutParentInput
-    Discount?: DiscountCreateNestedOneWithoutCategoriesInput
+    discount?: DiscountCreateNestedOneWithoutCategoriesInput
   }
 
   export type CategoryUncheckedCreateWithoutSectionsInput = {
@@ -21471,7 +21471,7 @@ export namespace Prisma {
     image?: ImageUpdateManyWithoutProductNestedInput
     sections?: SectionUpdateManyWithoutProductsNestedInput
     orderItems?: OrderItemUpdateManyWithoutProductNestedInput
-    Discount?: DiscountUpdateOneWithoutProductsNestedInput
+    discount?: DiscountUpdateOneWithoutProductsNestedInput
   }
 
   export type ProductUncheckedUpdateWithoutCategoryInput = {
@@ -21553,7 +21553,7 @@ export namespace Prisma {
     products?: ProductUpdateManyWithoutCategoryNestedInput
     sections?: SectionUpdateManyWithoutCategoryNestedInput
     subcategories?: CategoryUpdateManyWithoutParentNestedInput
-    Discount?: DiscountUpdateOneWithoutCategoriesNestedInput
+    discount?: DiscountUpdateOneWithoutCategoriesNestedInput
   }
 
   export type CategoryUncheckedUpdateWithoutParentInput = {
@@ -21967,7 +21967,7 @@ export namespace Prisma {
     image?: ImageUpdateManyWithoutProductNestedInput
     category?: CategoryUpdateOneRequiredWithoutProductsNestedInput
     orderItems?: OrderItemUpdateManyWithoutProductNestedInput
-    Discount?: DiscountUpdateOneWithoutProductsNestedInput
+    discount?: DiscountUpdateOneWithoutProductsNestedInput
   }
 
   export type ProductUncheckedUpdateWithoutSectionsInput = {
@@ -22018,7 +22018,7 @@ export namespace Prisma {
     products?: ProductUpdateManyWithoutCategoryNestedInput
     parent?: CategoryUpdateOneWithoutSubcategoriesNestedInput
     subcategories?: CategoryUpdateManyWithoutParentNestedInput
-    Discount?: DiscountUpdateOneWithoutCategoriesNestedInput
+    discount?: DiscountUpdateOneWithoutCategoriesNestedInput
   }
 
   export type CategoryUncheckedUpdateWithoutSectionsInput = {

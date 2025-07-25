@@ -7,11 +7,23 @@ import { Edit, Package, ShoppingBag, Star } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import RecentOrders from "@/components/user/RecentOrders";
 import Image from "next/image";
+import { findOrdersByUserId, getAllOrders } from "@/prisma/repository/orderRepo";
+import { ExtendedOrder } from "@/prisma/extendedModelTypes";
+import { CHARGES } from "@/app/constants";
+import { calculateDiscountAmount } from "@/lib/discount-utils";
+import { User } from "@/generated/prisma";
+import { calculateAge } from "@/lib/utils";
+import { IronSessionData } from "iron-session";
+import { findUserById } from "@/prisma/repository/userRepo";
+import { toast } from "sonner";
 
 const page = async () => {
   const ironSession = await getIronSessionDecodedCookie();
   // console.log("IRON SESSION USER data, /user/profile", ironSession);
   if (!ironSession.isAuthenticated) redirect("/");
+  
+
+  const orders = await findOrdersByUserId(ironSession.user!.id);
 
   return (
     <div className="flex flex-col gap-5">
@@ -19,9 +31,9 @@ const page = async () => {
       {/* <span>{`You are ${ironSession.isAuthenticated ? 'Logged In' : 'Not Authenticated'}`}</span>
       <Button variant={'outline'} disabled>{ironSession.user?.role}</Button> */}
       <ProfileHeader />
-      <PageStats />
-      <ProfileInfo/>
-      <RecentOrders/>
+      <PageStats ordersData={orders} />
+      <ProfileInfo userId={ironSession.user?.id ?? ''} />
+      <RecentOrders recentOrders={orders}/>
     </div>
   );
 };
@@ -123,12 +135,20 @@ const ProfileHeader = async () => {
   );
 };
 
-const PageStats = async () => {
+const PageStats = async ({ordersData}: {ordersData: ExtendedOrder[]}) => {
   const userData = {
     totalOrders: 10,
     totalSpent: 8000,
     totalSavings: 1200,
   };
+  const totalOrders = ordersData.length;
+  const totalSpent = ordersData.reduce((acc, order) => acc + parseFloat(order.paymentTotal.toString()), 0);
+  const totalSavings = ordersData.reduce((acc, order) => {
+    if (order.discount) {
+      return calculateDiscountAmount(order.discount, Number(order.paymentTotal), CHARGES.SHIPPING) + acc;
+    }
+    return acc;
+  }, 0);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -138,7 +158,7 @@ const PageStats = async () => {
             <Package className="w-6 h-6 text-white" />
           </div>
           <h3 className="text-2xl font-bold text-gray-800">
-            {userData.totalOrders}
+            {totalOrders}
           </h3>
           <p className="text-gray-600">Total Orders</p>
         </CardContent>
@@ -150,7 +170,7 @@ const PageStats = async () => {
             <ShoppingBag className="w-6 h-6 text-white" />
           </div>
           <h3 className="text-2xl font-bold text-gray-800">
-            ${userData.totalSpent}
+            ${totalSpent}
           </h3>
           <p className="text-gray-600">Total Spent</p>
         </CardContent>
@@ -162,7 +182,7 @@ const PageStats = async () => {
             <Star className="w-6 h-6 text-white" />
           </div>
           <h3 className="text-2xl font-bold text-gray-800">
-            ${userData.totalSavings}
+            ${totalSavings}
           </h3>
           <p className="text-gray-600">Total Savings</p>
         </CardContent>
@@ -171,7 +191,18 @@ const PageStats = async () => {
   );
 };
 
-const ProfileInfo = async () => {
+const ProfileInfo = async ({userId}: {userId:string}) => {
+
+  const userData = await findUserById(userId);
+
+  if (!userData) {
+    toast.error("User data not found");
+    redirect('/login');
+  }
+
+  const age = calculateAge(userData.dateOfBirth);
+ 
+
   return (
     <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm p-6">
       <CardHeader className="flex flex-row items-center justify-between mb-7">
@@ -191,7 +222,7 @@ const ProfileInfo = async () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <Label className="text-gray-600">Full Name</Label>
-            <p className="font-medium text-gray-800">{userData.name}</p>
+            <p className="font-medium text-gray-800">{userData.fullName}</p>
           </div>
           <div>
             <Label className="text-gray-600">Email</Label>
@@ -199,12 +230,12 @@ const ProfileInfo = async () => {
           </div>
           <div>
             <Label className="text-gray-600">Phone</Label>
-            <p className="font-medium text-gray-800">{userData.phone}</p>
+            <p className="font-medium text-gray-800">{userData.mobileNumber}</p>
           </div>
           <div>
             <Label className="text-gray-600">Age</Label>
             <p className="font-medium text-gray-800">
-              {userData.age} years old
+              {age} years old
             </p>
           </div>
           <div>

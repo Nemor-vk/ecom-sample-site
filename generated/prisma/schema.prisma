@@ -49,7 +49,7 @@ model Category {
   subcategories Category[] @relation("Subcategories")
 
   discountId String?
-  Discount   Discount? @relation(fields: [discountId], references: [id])
+  discount   Discount? @relation(fields: [discountId], references: [id])
 }
 
 model Discount {
@@ -168,7 +168,7 @@ model Product {
   orderItems OrderItem[]
 
   discountId String?
-  Discount   Discount? @relation(fields: [discountId], references: [id])
+  discount   Discount? @relation(fields: [discountId], references: [id])
 }
 
 model Role {

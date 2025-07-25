@@ -5,35 +5,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import Image from 'next/image';
 import { Badge } from '../ui/badge';
+import { findOrdersByUserId } from '@/prisma/repository/orderRepo';
+import { ExtendedOrder } from '@/prisma/extendedModelTypes';
+ // Replace with actual user ID or pass as prop
 
-const recentOrders = [
-  {
-    id: "ORD-2024-001",
-    date: "2024-01-15",
-    items: 3,
-    total: 89.99,
-    status: "Delivered",
-    image: "/placeholder.svg?height=60&width=60",
-  },
-  {
-    id: "ORD-2024-002",
-    date: "2024-01-10",
-    items: 1,
-    total: 45.0,
-    status: "Delivered",
-    image: "/placeholder.svg?height=60&width=60",
-  },
-  {
-    id: "ORD-2024-003",
-    date: "2024-01-05",
-    items: 2,
-    total: 127.5,
-    status: "Processing",
-    image: "/placeholder.svg?height=60&width=60",
-  },
-]
-
-const RecentOrders = () => {
+const RecentOrders = ({recentOrders}: {recentOrders: ExtendedOrder[]}) => {
   
   const [activeTab, setActiveTab] = useState("profile")
 
@@ -57,7 +33,7 @@ const RecentOrders = () => {
             className="flex items-center gap-4 p-4 rounded-xl bg-gray-50"
           >
             <Image
-              src={order.image || "/placeholder.svg"}
+              src={"/placeholder.svg"}
               alt="Order"
               width={60}
               height={60}
@@ -68,7 +44,7 @@ const RecentOrders = () => {
                 <p className="font-medium text-gray-800">{order.id}</p>
                 <Badge
                   variant={
-                    order.status === "Delivered" ? "default" : "secondary"
+                    order.status === "COMPLETED" ? "default" : "secondary"
                   }
                   className="rounded-full"
                 >
@@ -76,9 +52,9 @@ const RecentOrders = () => {
                 </Badge>
               </div>
               <p className="text-sm text-gray-600">
-                {order.date} • {order.items} items
+                {order.createdAt.toISOString()} • {order.orderItems.map(item => item.product.name).join(", ")} items
               </p>
-              <p className="font-semibold text-gray-800">${order.total}</p>
+              <p className="font-semibold text-gray-800">${Number(order.paymentTotal)}</p>
             </div>
           </div>
         ))}

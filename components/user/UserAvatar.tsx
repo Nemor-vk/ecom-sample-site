@@ -75,7 +75,7 @@ const UserDropdownMenu = ({userSession}:{userSession:Session | null}) => {
             ))}
             {authSession?.user?.role === SITE_ROLES.AMDIN &&
               ADMIN_ITEMS.map((item) => (
-              <DropdownMenuGroup key={item.label}>
+              <DropdownMenuGroup key={item.label} onClick={() => item.isSignOut ??  item.onClick}>
                 <DropdownMenuItem asChild>
                   <Link href={item.url }>
                     <item.icon className="size-4"/>
@@ -84,7 +84,6 @@ const UserDropdownMenu = ({userSession}:{userSession:Session | null}) => {
                 </DropdownMenuItem>
               </DropdownMenuGroup>
             ))
-
             }
         </DropdownMenuContent>
         </DropdownMenu>
