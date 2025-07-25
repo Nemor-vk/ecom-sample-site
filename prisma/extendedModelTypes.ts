@@ -23,7 +23,7 @@ export type ExtendedCategory = Category & {
 }
 
 export type ExtendedOrder = Order & {
-  orderItems: OrderItem[],
+  orderItems: ExtendedOrderItem[],
   user: User,
   Discount?: Discount,
 }

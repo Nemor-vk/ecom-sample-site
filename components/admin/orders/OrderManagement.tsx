@@ -10,84 +10,10 @@ import { DataTable, SortableHeader, ActionDropdown } from "@/components/table/da
 import { getAllOrdersApi } from "@/service/orders.service"
 import { toast } from "sonner"
 import { ExtendedOrder } from "@/prisma/extendedModelTypes"
+import { set } from "date-fns"
+import { orderColumns } from "@/lib/tableSchemas/OrderColumns"
 
-interface Order {
-  id: string
-  customer: string
-  email: string
-  total: number
-  status: "pending" | "processing" | "shipped" | "completed" | "cancelled"
-  date: string
-  items: number
-  paymentMethod: string
-  shippingAddress: string
-  product: string
-}
-
-const orders: Order[] = [
-  {
-    id: "ORD-001",
-    customer: "John Doe",
-    email: "john@example.com",
-    total: 299.99,
-    status: "completed",
-    date: "2024-01-15",
-    items: 3,
-    paymentMethod: "Credit Card",
-    shippingAddress: "123 Main St",
-    product: "Wireless Headphones",
-  },
-  {
-    id: "ORD-002",
-    customer: "Jane Smith",
-    email: "jane@example.com",
-    total: 149.5,
-    status: "processing",
-    date: "2024-01-14",
-    items: 2,
-    paymentMethod: "PayPal",
-    shippingAddress: "456 Oak Ave",
-    product: "Running Shoes",
-  },
-  {
-    id: "ORD-003",
-    customer: "Mike Johnson",
-    email: "mike@example.com",
-    total: 89.99,
-    status: "shipped",
-    date: "2024-01-13",
-    items: 1,
-    paymentMethod: "Bank Transfer",
-    shippingAddress: "789 Pine Blvd",
-    product: "Smartphone Case",
-  },
-  {
-    id: "ORD-004",
-    customer: "Sarah Wilson",
-    email: "sarah@example.com",
-    total: 199.99,
-    status: "pending",
-    date: "2024-01-12",
-    items: 4,
-    paymentMethod: "Credit Card",
-    shippingAddress: "321 Maple Lane",
-    product: "Laptop Bag",
-  },
-  {
-    id: "ORD-005",
-    customer: "Emily Davis",
-    email: "emily@example.com",
-    total: 99.99,
-    status: "cancelled",
-    date: "2024-01-11",
-    items: 1,
-    paymentMethod: "PayPal",
-    shippingAddress: "654 Birch St",
-    product: "Headphones",
-  },
-]
-
-const fetchAllOrders = async() => await getAllOrdersApi();
+// const fetchAllOrders = async() => await getAllOrdersApi();
 
 
 
@@ -96,135 +22,25 @@ export function OrdersManagement() {
 
   // USE EFFECT
   useEffect(() => {
+
     const loadOrders = async () => {
-      
       const allOrders = await getAllOrdersApi();
-        if(allOrders) {
-          // Set Records
-          setOrderData(allOrders);
+      if (!allOrders) {
+        toast.info("No Records Found", {
+          description: "No Order Records Available",
+        });
+      }
 
-          if (allOrders.length === 0) {
-          toast.info("No Records Found", {
-            description: 'No Order Records Available'
-          })
-
-        }
-        else {
-          toast.error("Something Went Wrong!", {
-            description: 'Failed to load all orders'
-          })
-        } 
-      };
-    }
+      // Set Records
+      setOrderData(allOrders || []);
+    };
 
   loadOrders();
   }, []);
 
-
-  const getStatusBadgeVariant = (status: string) => {
-    switch (status) {
-      case "completed":
-        return "default"
-      case "processing":
-        return "secondary"
-      case "shipped":
-        return "outline"
-      case "pending":
-        return "destructive"
-      case "cancelled":
-        return "destructive"
-      default:
-        return "secondary"
-    }
-  }
-
   const handleExport = () => {
     console.log("Exporting orders...")
   }
-
-  const columns: ColumnDef<ExtendedOrder>[] = [
-    {
-      accessorKey: "id",
-      header: ({ column }) => <SortableHeader column={column}>Order ID</SortableHeader>,
-      cell: ({ row }) => <div className="font-medium">{row.getValue("id")}</div>,
-    },
-    {
-      accessorKey: "customer",
-      header: ({ column }) => <SortableHeader column={column}>Customer</SortableHeader>,
-      cell: ({ row }) => {
-        const order = row.original
-        return (
-          <div>
-            <div className="font-medium">{order.user.fullName}</div>
-            <div className="text-sm text-muted-foreground">{order.user.email}</div>
-          </div>
-        )
-      },
-    },
-    // {
-    //   accessorKey: "products",
-    //   header: ({ column }) => <SortableHeader column={column}>Products</SortableHeader>,
-    //   cell: ({ row }) => <div className="font-medium">{row.getValue("product")}</div>,
-    // },
-    {
-      accessorKey: "items",
-      header: ({ column }) => <SortableHeader column={column}>Items</SortableHeader>,
-    },
-    {
-      accessorKey: "total",
-      header: ({ column }) => <SortableHeader column={column}>Total</SortableHeader>,
-      cell: ({ row }) => {
-        const total = Number.parseFloat(row.getValue("total"))
-        return <div className="font-medium">${total.toFixed(2)}</div>
-      },
-    },
-    {
-      accessorKey: "status",
-      header: "Status",
-      cell: ({ row }) => {
-        const status = row.getValue("status") as string
-        return <Badge variant={getStatusBadgeVariant(status)}>{status}</Badge>
-      },
-    },
-    {
-      accessorKey: "date",
-      header: ({ column }) => <SortableHeader column={column}>Date</SortableHeader>,
-      cell: ({ row }) => {
-        const date = new Date(row.getValue("date"))
-        return <div>{date.toLocaleDateString()}</div>
-      },
-    },
-    {
-      accessorKey: "paymentMethod",
-      header: "Payment",
-      cell: ({ row }) => <Badge variant="outline">{row.getValue("paymentMethod")}</Badge>,
-    },
-    {
-      id: "actions",
-      cell: ({ row }) => {
-        const order = row.original
-        return (
-          <ActionDropdown
-            onView={() => console.log("View", order.id)}
-            additionalActions={[
-              {
-                label: "Update status",
-                onClick: () => console.log("Update status", order.id),
-              },
-              {
-                label: "Send invoice",
-                onClick: () => console.log("Send invoice", order.id),
-              },
-              {
-                label: "Track shipment",
-                onClick: () => console.log("Track shipment", order.id),
-              },
-            ]}
-          />
-        )
-      },
-    },
-  ]
 
   const filterableColumns = [
     {
@@ -305,7 +121,7 @@ export function OrdersManagement() {
         </CardHeader>
         <CardContent>
           <DataTable
-            columns={columns}
+            columns={orderColumns}
             data={orderData}
             searchPlaceholder="Search orders, customers, products..."
             filterableColumns={filterableColumns}

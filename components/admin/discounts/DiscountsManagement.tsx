@@ -191,11 +191,11 @@ export function DiscountsManagement() {
         return limit ? `${used}/${limit}` : used.toString()
       },
     },
-    {
-      accessorKey: "orders",
-      header: "Orders",
-      cell: ({ row }) => row.original.orders,
-    },
+    // {
+    //   accessorKey: "orders",
+    //   header: "Orders",
+    //   cell: ({ row }) => row.original.orders,
+    // },
     {
       accessorKey: "validFrom",
       header: "Valid From",
@@ -315,9 +315,9 @@ export function DiscountsManagement() {
           <DataTable
             columns={columns}
             data={discounts}
-            loading={loading}
-            pagination={pagination}
-            onPaginationChange={setPagination}
+            // loading={loading}
+            // pagination={pagination}
+            // onPaginationChange={setPagination}
           />
         </CardContent>
       </Card>

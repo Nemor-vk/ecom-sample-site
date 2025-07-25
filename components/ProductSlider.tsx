@@ -14,7 +14,7 @@ const products = [
     price: 1997,
     originalPrice: 2500,
     rating: 4,
-    image: "/assets/products/boat_white.jpg?height=200&width=200",
+    image: "/assets/products/oneplus_tws.jpg?height=200&width=200",
     discount: "20% OFF",
   },
   {
@@ -23,7 +23,7 @@ const products = [
     price: 2999,
     originalPrice: 4000,
     rating: 5,
-    image: "/assets/products/oneplus_tws.jpg?height=200&width=200",
+    image: "/assets/banners/watch.png?height=200&width=200",
     discount: "25% OFF",
   },
   {
@@ -32,7 +32,7 @@ const products = [
     price: 1499,
     originalPrice: 2000,
     rating: 4,
-    image: "/placeholder.svg?height=200&width=200",
+    image: "/assets/products/boat_white.jpg?height=200&width=200",
     discount: "25% OFF",
   },
   {
@@ -41,7 +41,7 @@ const products = [
     price: 899,
     originalPrice: 1200,
     rating: 4,
-    image: "/placeholder.svg?height=200&width=200",
+    image: "/assets/banners/sunglass3.png?height=200&width=200",
     discount: "25% OFF",
   },
   {
@@ -50,7 +50,7 @@ const products = [
     price: 3999,
     originalPrice: 5000,
     rating: 5,
-    image: "/placeholder.svg?height=200&width=200",
+    image: "/assets/products/gshock1.jpg?height=200&width=200",
     discount: "20% OFF",
   },
   {
@@ -59,7 +59,7 @@ const products = [
     price: 2499,
     originalPrice: 3500,
     rating: 4,
-    image: "/placeholder.svg?height=200&width=200",
+    image: "/assets/banners/womenbag.png?height=200&width=200",
     discount: "29% OFF",
   },
 ]

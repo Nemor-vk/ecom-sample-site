@@ -8,7 +8,11 @@ export async function getAllOrders() : Promise<ExtendedOrder[]> {
     
     const allOrders = await db.order.findMany({
         include: {
-            orderItems:true,
+            orderItems:{
+                include: {
+                    product: true,
+                },
+            },
             user:true,
             discount:true
         }
