@@ -2,8 +2,9 @@ import db from "@/lib/prisma";
 import { ExtendedOrder } from "../extendedModelTypes";
 import { CartItemType, OrderRequestModel } from "@/types/types";
 import { Decimal } from "@/generated/prisma/runtime/index-browser";
+import { Order } from "@/generated/prisma";
 
-export async function getAllOrders() : Promise<ExtendedOrder[]> {
+export async function getAllOrders() : Promise<Order[]> {
   //get all the categories linked to a section
     
     const allOrders = await db.order.findMany({
@@ -22,7 +23,7 @@ export async function getAllOrders() : Promise<ExtendedOrder[]> {
     return allOrders;
 }
 
-export async function createNewOrder({ cartItems, userId, discountId, paymentTotal }: OrderRequestModel ): Promise<ExtendedOrder | null> {
+export async function createNewOrder({ cartItems, userId, discountId, paymentTotal }: OrderRequestModel ): Promise<Order | null> {
 
   const newOrder = await db.order.create({
   data: {
@@ -47,7 +48,7 @@ export async function createNewOrder({ cartItems, userId, discountId, paymentTot
 return newOrder;
 }
 
-export async function findOrdersByUserId(userId: string): Promise<ExtendedOrder[]> {
+export async function findOrdersByUserId(userId: string): Promise<Order[]> {
   const userOrders = await db.order.findMany({
     where: {
       userId,
@@ -65,4 +66,33 @@ export async function findOrdersByUserId(userId: string): Promise<ExtendedOrder[
   });
 
   return userOrders;
+}
+
+export async function getOrderById(orderID:string) : Promise<ExtendedOrder | null> {
+  //get all the categories linked to a section
+    
+    const orderData = await db.order.findUnique({
+        where : {
+          id : orderID
+        },
+        include: {
+            orderItems:{
+                include: {
+                    product: {
+                      include : {
+                        image: true,
+                        category : true,
+                      }
+                    },
+                },
+            },
+            user:true,
+            discount:true
+        }
+    })
+
+    console.log("Orders DB - ORDER BY ID :: ", orderData)
+
+    db.$disconnect();
+    return orderData;
 }

@@ -1,6 +1,8 @@
 import { CHARGES, TAXES_IN_PERCENTAGE } from "@/app/constants"
 import { Discount, OrderItem } from "@/generated/prisma"
+import { ExtendedOrder, ExtendedOrderItem } from "@/prisma/extendedModelTypes"
 import { CartItemType } from "@/types/types"
+
 
 
 export function calculateDiscountAmount(discount: Discount, subtotal: number, shipping: number): number {
@@ -22,6 +24,17 @@ export function calculateDiscountAmount(discount: Discount, subtotal: number, sh
     default:
       return 0
   }
+}
+
+export function calculateTotalSavings(orders:ExtendedOrder[]): number {
+
+  const totalSavings = orders.reduce((total, orderData) => {
+    const discountAmount = orderData.discount ? calculateDiscountAmount(orderData.discount, Number(orderData.paymentTotal), CHARGES.SHIPPING) : 0;
+    const productSavings = orderData.orderItems.reduce((sum, item) => sum + (Number(item.product.originalPrice) - Number(item.product.price)) * item.quantity, 0);
+    return total + discountAmount + productSavings;
+  }, 0);
+
+  return totalSavings;
 }
 
 export function calculateOrderTotals(items: CartItemType[], discount?: Discount | null) {

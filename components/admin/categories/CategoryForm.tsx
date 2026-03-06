@@ -23,11 +23,12 @@ import { useEffect, useState } from 'react'
 import { siteBaseApiUrl, siteApiConfig } from '@/lib/config/sitePathsConfig'
 import { Switch } from '@/components/ui/switch'
 import { AvailabilityBadge } from '@/components/ui/custom/availability-toggle'
-import ImageUpload, { SingleImageUpload } from '@/components/ImageUpload'
+import ImageUpload, { SingleImageUpload, UploadMultipleImages, UploadSingleImage } from '@/components/ImageUpload'
 import { cn } from '@/lib/utils'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { ExtendedCategory } from '@/prisma/extendedModelTypes'
+import { ExtendedCategory, ExtendedPromotionalTag } from '@/prisma/extendedModelTypes'
 import { getAllPromotionalTagsApi } from '@/service/promotionTags.service'
+import { IMAGE_FOLDERS } from '@/app/constants/image.constants'
 
 type CategoryFormProps = {
   initialValues?: z.infer<typeof categorySchema>
@@ -55,7 +56,7 @@ const CategoryForm = ({
     defaultValues: initialValues,
   })
 
-  const [promotionalTagList, setPromotionalTagList] = useState<Section[]>([]);
+  const [promotionalTagList, setPromotionalTagList] = useState<ExtendedPromotionalTag[]>([]);
   const [categories, setCategories] = useState<ExtendedCategory[]>([]);
 
   useEffect(() => {
@@ -103,7 +104,7 @@ const CategoryForm = ({
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <SingleImageUpload imageUrl={field.value} onFileChange={field.onChange} folderName="products" />
+                <UploadSingleImage imagePath={field.value} onImageChange={field.onChange} folderName={IMAGE_FOLDERS.CATEGORY} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -124,7 +125,7 @@ const CategoryForm = ({
           )}
         />
 
-        <FormField
+        {/* <FormField
           control={form.control}
           name="productCount"
           render={({ field }) => (
@@ -136,7 +137,7 @@ const CategoryForm = ({
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
 
         <FormField
           control={form.control}
@@ -173,7 +174,7 @@ const CategoryForm = ({
               <FormLabel>Promotional Tags</FormLabel>
               <FormControl>
                 <InputTagMultiSelect
-                  tagList={promotionalTagList.map(tag => tag.name)}
+                  tagList={promotionalTagList ? promotionalTagList.map(tag => tag.name) : []}
                   selectedTags={field.value || []}
                   setTags={field.onChange}
                 />

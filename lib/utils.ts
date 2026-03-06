@@ -1,3 +1,4 @@
+import { STATUS_CODES } from "@/app/constants/errorConstants";
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -31,3 +32,27 @@ export function calculateAge(dateOfBirth: Date): number {
 
   return age;
 }
+
+
+export function formatCurrencyToINR(price: number) {
+  const formatted = new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+  }).format(price);
+
+  return formatted;
+}
+
+export function getStatusMessage(code: number): string {
+  const statusMap: Record<STATUS_CODES, string> = {
+    [STATUS_CODES.INTERNAL]: 'INTERNAL',
+    [STATUS_CODES.NOT_FOUND]: 'NOT_FOUND',
+    [STATUS_CODES.FORBIDDEN]: 'FORBIDDEN',
+    [STATUS_CODES.CONFLICT]: 'CONFLICT',
+    [STATUS_CODES.SUCCESS]: 'SUCCESS',
+  };
+
+  return statusMap[code as STATUS_CODES] || 'UNKNOWN_STATUS';
+}
+
+

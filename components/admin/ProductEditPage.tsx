@@ -21,7 +21,7 @@ import { PRODUCT_TYPE } from "@/app/constants"
 import { Switch } from "../ui/switch"
 import { Category, Image as ImageSchema, Section } from "@/generated/prisma"
 import { useState, useEffect, useRef } from "react"
-import ImageUpload from "../ImageUpload"
+import ImageUpload, { UploadMultipleImages } from "../ImageUpload"
 import { toast } from "sonner"
 import RichTxtEditor from "../richTxtEditor/RichTxtEditor"
 import { InputTagMultiSelect, InputTagSimple } from "../InputTag"
@@ -29,19 +29,21 @@ import { ExtendedProduct } from "@/prisma/extendedModelTypes"
 import { envConfig } from "@/lib/envConfig"
 import { useSideBarDrawer } from "@/store/tableActions"
 import { siteApiConfig, siteBaseApiUrl } from "@/lib/config/sitePathsConfig"
+import { ProductImageManager } from "./images/ProductImageManager"
 
 
 type props = {
   product: ExtendedProduct,
   // formRef: HTMLFormElement | null;
   // sectionNameList: string[];
+  refreshContent:() => void
 };
 
 
 
-const ProductEditPage = ({product}: props) => {
+const ProductEditPage = ({product, refreshContent}: props) => {
 
-    const {name, description, price, stock, availableForPurchase, category, image, rating, sections, categoryId, productType, productTags } = product;
+    const {name, description, price, originalPrice, stock, availableForPurchase, category, image, rating, sections, categoryId, productType, productTags } = product;
   
     const productSectionNames = sections?.map(section => section.name) ?? [];
     const imagePaths: string[] = image.map(img => img.url);
@@ -93,6 +95,7 @@ const ProductEditPage = ({product}: props) => {
       name: name ?? "",
       availableForPurchase : availableForPurchase ?? true,
       description : description ?? "",
+      originalPrice : product.originalPrice ? parseFloat(Number(originalPrice!.toString()).toFixed()) : 0,
       price :  parseFloat(Number(price.toString()).toFixed(2)),
       stock : stock ?? 0,
       rating : rating ?? 0,
@@ -124,11 +127,26 @@ const ProductEditPage = ({product}: props) => {
       toast.success('Product Updated Successfully')
       // await uploadFiles(images);
       onClose() //Closes sidebar
+      refreshContent(); //Refreshes TABLE - to fetch new data
       
     } catch (error) {
       console.log('error: ' + error)
       toast.error('Something went wrong!')
     }
+  }
+
+  //// image - fnc
+   const [productImages, setProductImages] = useState([
+    {
+      id: "existing-1",
+      url: "/placeholder.svg?height=300&width=300&text=Existing+Image",
+      name: "existing-product-image.jpg",
+    },
+  ])
+
+  const handleImagesChange = (images: any[]) => {
+    console.log("Product images updated:", images)
+    setProductImages(images)
   }
 
 
@@ -165,6 +183,21 @@ const ProductEditPage = ({product}: props) => {
                   <SelectItem value={PRODUCT_TYPE.DIGITAL}>{PRODUCT_TYPE.DIGITAL}</SelectItem>
                 </SelectContent>
               </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+      
+      <FormField
+          control={form.control}
+          name="originalPrice"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Original Price</FormLabel>
+              <FormControl>
+                <Input placeholder="100.00" type="number" {...field}  required />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -286,7 +319,7 @@ const ProductEditPage = ({product}: props) => {
             <FormItem>
               {/* <FormLabel>Upload Images</FormLabel> */}
               <FormControl>
-                <ImageUpload imagePaths={imagePaths} onFileChange={field.onChange} folderName="products" />
+                <UploadMultipleImages imagePaths={imagePaths} onImageChange={field.onChange} folderName="products" />
               </FormControl>
               <FormDescription>
                 {/* {field.value.length > 0 && <ImageDisplay imagePaths={imagePaths} />} */}

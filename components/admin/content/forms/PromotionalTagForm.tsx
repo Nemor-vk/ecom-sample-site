@@ -22,7 +22,7 @@ import { Switch } from '@/components/ui/switch'
 type PromotionalFormProps = {
   initialValues?: z.infer<typeof promotionalTagSchema>
   onSubmit: (values: z.infer<typeof promotionalTagSchema>) => Promise<void>
-  mode?: 'add' | 'edit',
+  mode: 'add' | 'edit',
   className?: string,
   onCancel:() => void
 }

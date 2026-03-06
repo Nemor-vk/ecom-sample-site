@@ -174,6 +174,8 @@ export const INDIAN_CITIES_BY_STATE: Record<string, string[]> = {
 
 export const IMAGE_CONSTANTS = {
     PLACEHOLDER_GALLERY_IMG : '/assets/images/placeholder-img.png',
-} 
+}
+
+
 
 

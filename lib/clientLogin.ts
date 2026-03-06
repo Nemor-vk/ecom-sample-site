@@ -23,11 +23,11 @@ export const callUpdateIronSessionApi = async () => {
   const userData = jsonResponse.ironSession.user;
   console.log("API RESPONSE JSON: ", jsonResponse)
 
-  if(userData && userData.role === SITE_ROLES.AMDIN) {
-    window.location.href = '/admin'
-  } else {
+  //Important to Reflect Login 
+  if(userData) {
     refreshPage();
-  }
+  } 
+
   return true;
 };
 

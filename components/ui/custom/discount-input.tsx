@@ -10,6 +10,7 @@ import { Discount } from "@/generated/prisma"
 import { toast } from "sonner"
 import { useCartStore } from "@/store/cartStore"
 import { set } from "date-fns"
+import { API_CONFIG } from "@/app/constants/apiContants"
 
 interface DiscountInputProps {
   orderTotal: number
@@ -26,7 +27,13 @@ export function DiscountInput({ orderTotal }: DiscountInputProps) {
     
     async function fetchAvailableDiscounts() {
       try {
-        const response = await fetch("/api/discounts")
+        const response = await fetch("/api/discounts", {
+          method: "GET",
+            headers: {
+              "x-site-origin": API_CONFIG.ALLOWED_ORIGIN,
+              "x-client-key": API_CONFIG.CLIENT_KEY,
+            },
+        })
         if (!response.ok) {
           throw new Error("Server response was not ok")
         }
@@ -34,7 +41,7 @@ export function DiscountInput({ orderTotal }: DiscountInputProps) {
         setAvailableDiscounts(data.discounts || [])
       } catch (error) {
         console.error("Failed to fetch available discounts:", error);
-        toast.error("Error Occured While Applying discounts");
+        toast.error("Error Occured While Loading discounts");
         
       }
     }

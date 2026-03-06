@@ -1,6 +1,9 @@
-import { siteApiConfig, siteBaseApiUrl } from "@/lib/config/sitePathsConfig";
+import { API_CONFIG } from "@/app/constants/apiContants";
+import { PLACEHOLDER, siteApiConfig, siteBaseApiUrl } from "@/lib/config/sitePathsConfig";
+import { orderResponseModel } from "@/models/orders.responseModel";
 import { ExtendedOrder } from "@/prisma/extendedModelTypes";
-import { CartItemType, OrderRequestModel } from "@/types/types";
+import { OrderRequestModel } from "@/types/types";
+import { toast } from "sonner";
 
 export async function getAllOrdersApi():Promise<ExtendedOrder[] | null>{
   try {
@@ -15,6 +18,30 @@ export async function getAllOrdersApi():Promise<ExtendedOrder[] | null>{
     }
   } catch (error) {
     console.error("Error fetching orders:", error);
+    return null
+  }
+}
+
+export async function fetchOrderByIdApi(orderId:string):Promise<ExtendedOrder | null>{
+  try {
+    console.log("Fetching order by ID:", siteBaseApiUrl + siteApiConfig.orders.fetchById.replace(PLACEHOLDER, orderId));
+    const response = await fetch(siteBaseApiUrl + siteApiConfig.orders.fetchById.replace(PLACEHOLDER, orderId), {
+      headers: {
+        "x-site-origin": API_CONFIG.ALLOWED_ORIGIN,
+        "x-client-key": API_CONFIG.CLIENT_KEY,
+      },
+    });
+    const jsonBody:orderResponseModel = await response.json();
+    console.log("Orders api response ", jsonBody)
+    
+    if (response.status === 200) {
+      return jsonBody.order;
+    }
+
+    return null
+  } catch (error) {
+    console.error("Error fetching orderByID:", error);
+    // toast.error('Order check failed due to server error', {description:'Oops! Your order didnt go through — Try Placing Order Again'})
     return null
   }
 }
@@ -37,6 +64,9 @@ export async function createNewOrderApi(orderRequestData: OrderRequestModel):Pro
         paymentTotal,
       }),
     });
+    
+    console.log(":::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::")
+    console.log("Create order API response status:", response.status);
 
     if (!response.ok) {
       const errorData = await response.json();

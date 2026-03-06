@@ -16,15 +16,26 @@ import { ProductType } from "@/generated/prisma"
 import StarRating from "@/components/StarRating"
 import { ProductColumns } from "@/lib/tableSchemas/ProductColumns"
 import Link from "next/link"
+import { useSideBarDrawer } from "@/store/tableActions"
+import { cn } from "@/lib/utils"
+import ProductDrawer from "./ProductDrawer"
+import { API_CONFIG } from "@/app/constants/apiContants"
 
 export function ProductsManagement() {
 
   const [productData, setProductData] = useState<ExtendedProduct[]>([])
+  const {isOpen} = useSideBarDrawer();
+  const [refreshTableContent, setRefreshTableContent] = useState(false)
 
   useEffect(() => {
     const products = async () => {
       try {
-          const response = await fetch("http://localhost:3000/api/product");
+          const response = await fetch("http://localhost:3000/api/product", {
+            headers: {
+              "x-site-origin": API_CONFIG.ALLOWED_ORIGIN,
+              "x-client-key": API_CONFIG.CLIENT_KEY,
+            },
+          });
           const data = await response.json();
           console.log("products :  ", data)
           setProductData(data);
@@ -36,7 +47,7 @@ export function ProductsManagement() {
     };
 
     products()
-  }, [])
+  }, [refreshTableContent])
 
   const handleExport = () => {
     // Export logic here
@@ -79,16 +90,24 @@ export function ProductsManagement() {
 
   // Calculate statistics
   const totalProducts = productData.length
-  const availableProducts = productData.filter(
-    (p) => p.availableForPurchase && (p.productType !== ProductType.PHYSICAL || p.stock > 0),
-  ).length
-  const lowStockProducts = productData.filter(
+  const availableProducts = Array.isArray(productData)
+  ? productData.filter(
+      (p) =>
+        p.availableForPurchase &&
+        (p.productType !== ProductType.PHYSICAL || p.stock > 0),
+    ).length
+  : 0;
+
+  const lowStockProducts =  Array.isArray(productData)
+  ? productData.filter(
     (p) => p.productType === ProductType.PHYSICAL && p.stock > 0 && p.stock < 10,
-  ).length
-  const outOfStockProducts = productData.filter((p) => p.productType === ProductType.PHYSICAL && p.stock === 0).length
+  ).length :0;
+
+  const outOfStockProducts =  Array.isArray(productData)
+  ? productData.filter((p) => p.productType === ProductType.PHYSICAL && p.stock === 0).length : 0;
 
   return (
-    <div className="flex-1 space-y-4">
+    <div className={cn('' , "flex-1 space-y-4")}>
       <div className="flex items-center justify-between space-y-2">
         <h2 className="text-3xl font-bold tracking-tight">Products</h2>
         <Button asChild className=''>
@@ -99,7 +118,7 @@ export function ProductsManagement() {
         </Button>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Products</CardTitle>
@@ -151,7 +170,7 @@ export function ProductsManagement() {
             Manage your product catalog including physical products, digital downloads, and services
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="">
           <DataTable
             columns={ProductColumns}
             data={productData}
@@ -161,6 +180,11 @@ export function ProductsManagement() {
           />
         </CardContent>
       </Card>
+
+      {/* Product Edit side bar */}
+      <div>
+        <ProductDrawer refreshContent={() => {setRefreshTableContent(!refreshTableContent)}}/>
+      </div>
     </div>
   )
 }

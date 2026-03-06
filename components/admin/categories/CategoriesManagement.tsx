@@ -53,10 +53,10 @@ export function CategoriesManagement({categories} : {categories:ExtendedCategory
 
   return (
     <div className="flex-1 space-y-4">
-      <div className="flex flex-cpo items-center justify-between space-y-2 mb-5">
+      <div className="flex flex-cpo items-center justify-between gap-2 mb-5">
         <h2 className="text-3xl font-bold tracking-tight">Categories</h2>
         <Button size={'lg'} asChild className='py-3.5 px-5'>
-            <Link href={'/admin/categories/new'}><Plus/>Add New Category</Link>
+            <Link href={'/admin/categories/new'}><Plus/>Add Category</Link>
         </Button>
       </div>
 

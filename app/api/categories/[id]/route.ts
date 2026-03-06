@@ -1,4 +1,4 @@
-import { updateExistingCategory } from "@/prisma/repository/categoryRepo";
+import { addNewCategory, updateExistingCategory } from "@/prisma/repository/categoryRepo";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {

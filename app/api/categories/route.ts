@@ -20,8 +20,12 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest, res: NextResponse) {
     try {
       const categoryJson = await req.json();
-      addNewCategory(categoryJson)
-  
+      const result = await addNewCategory(categoryJson);
+
+      if (!result) {
+        return NextResponse.json({ message: 'Failed to Add Category' }, { status: 500 });
+      }
+
       return NextResponse.json({ message: 'Category Added Successfully!' }, { status: 200 });
     } catch (error) {
       console.error(error);

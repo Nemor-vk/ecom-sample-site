@@ -16,6 +16,7 @@ import { useSideBarDrawer } from "@/store/tableActions"
 import RichTxtEditor from "@/components/richTxtEditor/RichTxtEditor"
 import Link from "next/link"
 import { redirect } from "next/navigation"
+import { formatCurrencyToINR } from "../utils"
 
 
 const getProductTypeIcon = (type: ProductType) => {
@@ -92,14 +93,14 @@ const getProductTypeIcon = (type: ProductType) => {
         const primaryImage = product.image[0]
         return (
           <div className="flex items-center space-x-3">
-            <Avatar className="h-20 w-20 rounded-md">
+            <Avatar className="h-20 w-20 rounded-md aspect-square">
               <Link href={`/shop/products/${product.id}`} key={product.id}>
                 <AvatarImage
                   src={ envConfig.env.imageKit.url + primaryImage?.url || "/placeholder.svg"}
                   alt={primaryImage?.altText || product.name}
                   className="object-cover"
                   />
-                <AvatarFallback className="rounded-md">{product.name.slice(0, 2).toUpperCase()}</AvatarFallback>
+                <AvatarFallback className="rounded-md aspect-square">{product.name.slice(0, 2).toUpperCase()}</AvatarFallback>
               </Link>
             </Avatar>
             <div className="min-w-0 flex-1 self-start">
@@ -107,7 +108,7 @@ const getProductTypeIcon = (type: ProductType) => {
               <StarRating rating={product.rating} size={12} />
               <div className="text-xs text-muted-foreground line-clamp-2 mt-1.5">
                 {product.description && product.description.length > 0 
-                 ? <RichTxtEditor content={product.description.trim()} isEditable={false} className="border-0 inline-block min-h-0 p-0" />
+                 ? <RichTxtEditor content={product.description.trim()} isEditable={false} className="border-0 inline-block min-h-0 p-0 line-clamp-2" />
                  : "No description available"
                 }
               </div>
@@ -163,11 +164,8 @@ const getProductTypeIcon = (type: ProductType) => {
       header: ({ column }) => <SortableHeader column={column}>Price</SortableHeader>,
       cell: ({ row }) => {
         const price = Number.parseFloat(row.getValue("price"))
-        const formatted = new Intl.NumberFormat("en-US", {
-          style: "currency",
-          currency: "USD",
-        }).format(price)
-        return <div className="font-medium">{formatted}</div>
+   
+        return <div className="font-medium">{formatCurrencyToINR(price)}</div>
       },
     },
     {
@@ -255,8 +253,39 @@ const getProductTypeIcon = (type: ProductType) => {
       <ActionDropdown
             onView={() => redirect(`/shop/products/${product.id}`)}
             onEdit={() => onOpenDrawer(product)}
-            onDelete={() => console.log("Delete", product.id)}
+            onDelete={() => deleteProductFromDB(product.id)}
             additionalActions={additionalActions}
           />
     )
+  }
+
+
+  const deleteProductFromDB = async (productId:string) => {
+     try {
+       const response = await fetch(
+         `/api/product/${productId}`,
+         {
+           method: "DELETE",
+           headers: {
+             "Content-Type": "application/json",
+           },
+         }
+       );
+
+      //  const resultJson = await response.json();
+      //  const allAddresses: Address[] = resultJson.address;
+
+       if (!response.ok) {
+         console.log("Failed to delete product");
+         toast.error("Failed to delete product, Try Again!")
+         return;
+       }
+
+       toast.info("Product deleted successfully!")
+       window.location.reload()
+
+     } catch (error) {
+       console.log("Something went wrong fetching addresses:", error);
+       toast.error("Failed to delete product, Something went wrong!")
+     }
   }

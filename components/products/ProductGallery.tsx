@@ -25,12 +25,12 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
   return (
     <div className="space-y-4">
       {/* Main Image */}
-      <div className="relative aspect-square bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl overflow-hidden group">
+      <div className="relative aspect-square bg-gradient-to-br bg-gray-200 rounded-2xl overflow-hidden group">
         <Image
           src={images[currentImage] ? envConfig.env.imageKit.url + images[currentImage] : "/placeholder.svg"}
           alt={productName}
           fill
-          className="object-contain p-8 transition-transform duration-300 group-hover:scale-105"
+          className="object-cover p-2 rounded-2xl transition-transform duration-300 group-hover:scale-105"
           priority
         />
 
@@ -68,7 +68,7 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
               }`}
             >
               <Image
-                src={image || "/placeholder.svg"}
+                src={ envConfig.env.imageKit.url + image || "/placeholder.svg"}
                 alt={`${productName} view ${index + 1}`}
                 fill
                 className="object-contain p-2"

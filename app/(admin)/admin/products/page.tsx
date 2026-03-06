@@ -1,3 +1,4 @@
+import ProductDrawer from '@/components/admin/products/ProductDrawer'
 import { ProductsManagement } from '@/components/admin/products/ProductManagement'
 import SidePopupDrawer from '@/components/admin/SidePopupDrawer'
 import TableList from '@/components/admin/TableList'
@@ -36,14 +37,7 @@ const page = async () => {
    
   return (
     <div className=''>
-        {/* <h2 className='mb-5 text-xl'>All Products</h2>
-        <Button asChild className=''>
-            <Link href={'/admin/products/new'}>Add Product</Link>
-        </Button> */}
-       {/* <div className='mt-8'>
-          <TableList columns={productColumns} data={data}/>
-          </div> */}
-        <SidePopupDrawer/>
+       {/* <ProductDrawer/> */}
        <ProductsManagement/>
     </div>
   )

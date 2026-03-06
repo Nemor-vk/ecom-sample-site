@@ -64,7 +64,7 @@ const UserDropdownMenu = ({userSession}:{userSession:Session | null}) => {
             <DropdownMenuSeparator className='mb-2' />
             {authSession?.user?.role != SITE_ROLES.AMDIN && 
               UserMenuItems.map((menuItem) => (
-                <DropdownMenuGroup key={menuItem.label} onClick={() => menuItem.isSignOut ??  menuItem.onClick}>
+                <DropdownMenuGroup key={menuItem.label} onClick={() => menuItem.onClick ? menuItem.onClick() : ''}>
                   <DropdownMenuItem asChild>
                       <Link href={menuItem.url}>
                         <menuItem.icon className="size-4"/>
@@ -75,9 +75,9 @@ const UserDropdownMenu = ({userSession}:{userSession:Session | null}) => {
             ))}
             {authSession?.user?.role === SITE_ROLES.AMDIN &&
               ADMIN_ITEMS.map((item) => (
-              <DropdownMenuGroup key={item.label} onClick={() => item.isSignOut ??  item.onClick}>
+              <DropdownMenuGroup key={item.label} onClick={() => item.onClick ? item.onClick() : ''}>
                 <DropdownMenuItem asChild>
-                  <Link href={item.url }>
+                  <Link href={item.url } className='cursor-pointer'>
                     <item.icon className="size-4"/>
                     <span >{item.label}</span>
                   </Link>

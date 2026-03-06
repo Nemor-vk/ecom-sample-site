@@ -3,9 +3,10 @@ import React from 'react'
 import { Category } from '@/generated/prisma';
 import { getAllCategories } from '@/prisma/repository/categoryRepo';
 import Link from 'next/link';
-import { findAllProducts, findProductsByCategoryName } from '@/prisma/repository/productRepo';
 import { ALL_CATEGORIES } from '@/app/constants';
 import ProductCard from '@/components/ProductCard';
+import { SerializedProduct } from '@/lib/serializers/product.serialize';
+import { fetchAllProducts, fetchProductByCategoryName } from '@/service/product.service';
 
 
 const page = async({params} : {params: {slug : string}, props: {categories : Category[]}}) => {
@@ -13,27 +14,33 @@ const page = async({params} : {params: {slug : string}, props: {categories : Cat
     const {slug} = await params;
     const categories: Category[] = await getAllCategories();
     const categoryNameList : string[] = categories.map(category => category.name.toLowerCase());
-    let products:ExtendedProduct[] = []
+    let products:SerializedProduct[] = []
     
-    if(!categoryNameList.includes(slug) && slug != ALL_CATEGORIES) return (<div>Not Found</div>);
+    console.log(slug.replace('_', ' '))
+    if(!categoryNameList.includes(slug.replace('_', ' ')) && slug != ALL_CATEGORIES) return (<div>Not Found</div>);
 
-    console.log(slug)
+ 
 
+    /// to change db call to api call
     if( slug === ALL_CATEGORIES) {
-      products = await findAllProducts();
+      products = await fetchAllProducts();
     } else {
-      products = await findProductsByCategoryName(slug.toLowerCase());
+      products = await fetchProductByCategoryName(slug.toLowerCase());
     }
 
   return (
     <div className='mx-auto'>
-        <h1 className='my-4 text-lg capitalize'>All {slug}</h1>
-        <div className='grid gap-4 grid-cols-2 lg:grid-cols-[repeat(auto-fit,minmax(300px,0.33fr))] justify-center'>
-            {products.map( (productItem) => (
+        <h1 className='my-4 text-lg lg:text-2xl capitalize'>{slug.replace('_', ' ')}</h1>
+        <div className='grid gap-4 grid-cols-2 lg:grid-cols-[repeat(auto-fit,minmax(300px,0.25fr))] justify-start'>
+            {products && products.map( (productItem) => (
                 <Link href={`${slug}/${productItem.id}`} key={productItem.id}>
                 <ProductCard product={productItem} />
                 </Link>
             ))}
+
+            {products.length === 0 && (
+                <div className='col-span-full text-center text-muted-foreground'>No products found</div>
+            )}
         </div>
     </div>
   )

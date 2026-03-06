@@ -1,0 +1,7 @@
+export enum STATUS_CODES {
+    INTERNAL = 500,
+    NOT_FOUND = 404,
+    FORBIDDEN = 403,
+    CONFLICT = 409,
+    SUCCESS = 200
+}

@@ -5,9 +5,21 @@ import { signInWithCredentials, signUp } from '@/lib/auth'
 import { signInSchema, signUpSchema } from '@/lib/validations'
 import React, { useEffect } from 'react'
 import { LOGIN_TYPE } from './page'
+import { User } from 'next-auth'
+import { redirect, useSearchParams } from 'next/navigation'
 
-const AuthContentPage = ({loginType}:{loginType:LOGIN_TYPE}) => {
+const AuthContentPage = ({loginType, session}:{loginType:LOGIN_TYPE, session:User | null}) => {
 
+    //  Redirect Logic after login
+    const searchParams = useSearchParams();
+    const redirect_to = searchParams.get('redirect_to')
+    if(session && redirect_to) {
+      redirect(redirect_to)
+    } else if (session) {
+      redirect('/')
+    }
+
+  
   return (
     <>
       {loginType === 'SIGNIN' 

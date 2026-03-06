@@ -1,13 +1,28 @@
 import db from '@/lib/prisma';
-import {Section } from '../../generated/prisma/client.js';
-import { ExtendedPromotionalTag } from '../extendedModelTypes.js';
+import {Product, Section } from '../../generated/prisma/client.ts';
+import { ExtendedProduct } from '../extendedModelTypes.ts';
+import { SITE_ROLES } from '@/app/constants/index.ts';
+import { User } from 'next-auth';
+import { STATUS_CODES } from '@/app/constants/errorConstants.ts';
 
-export async function getAllPromotionalTags() : Promise<ExtendedPromotionalTag[]> {
+export type ExtendedSectionlTagPrisma = Section & {
+  products: ExtendedProduct[];
+};
+
+
+export async function getAllPromotionalTags() {
   //get all the categories linked to a section
     
     const sections = await db.section.findMany({
       include : {
-        products: true,
+        products: {
+          include : {
+            category:true,
+            discount: true,
+            image: true,
+            sections:true
+          }
+        },
       }
     })
 
@@ -27,8 +42,6 @@ export async function addNewPromotionalTag(promotionTag:Section){
         isActive: isActive ?? false
       }
     })
-
-    // db.$disconnect();
     return sections;
 }
 
@@ -51,15 +64,46 @@ export async function updatePromotionalTag(promotionTag:Section){
     return updatedSection;
 }
 
-export async function deletePromotionAtId(tagId:string){
-    
-    const section = await db.section.delete({
-      where : {
-        id: tagId
-      }
-    })
+// Rename if you prefer: deleteSectionById
+export async function deletePromotionAtId( sectionId: string, user:User | undefined, override?: boolean) : Promise<{message:string, code : STATUS_CODES}> {
+  
+  if(!user) {
+     return ({message:'Access denied: admin privileges are required to delete sections.', code: STATUS_CODES.FORBIDDEN });
+  }
+  else if (user.role != SITE_ROLES.AMDIN) {
+    return ({message:'Only admins can delete sections.', code: STATUS_CODES.FORBIDDEN});
+  }
 
-    return section;
+  // Fetch counts of related records
+  const section = await db.section.findUnique({
+    where: { id: sectionId },
+    select: {
+      id: true,
+      _count: { select: { products: true, category: true } },
+    },
+  });
+
+  if (!section) {
+    return ({message:'Section not found.', code: STATUS_CODES.NOT_FOUND });
+  }
+
+  const hasLinks =
+    (section._count?.products ?? 0) > 0 || (section._count?.category ?? 0) > 0;
+
+  // If linked and no override, block deletion
+  if (hasLinks && !override) {
+    const details = {
+      products: section._count.products,
+      categories: section._count.category,
+    };
+    return ({message:`Cannot delete: section is linked to products or categories ${details}. Admins may use override to force delete.` , code: STATUS_CODES.CONFLICT}
+    );
+  } else if (!hasLinks || hasLinks && override) {
+    await db.section.delete({ where: { id: sectionId } });
+    // No relations — safe to delete
+    return({message:'Promotion Deleted Successfully' , code: STATUS_CODES.SUCCESS});
+  }
+
 }
 
 export async function togglePromotionStatusAtId(tagId:string, status:boolean){

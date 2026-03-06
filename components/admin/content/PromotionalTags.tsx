@@ -7,9 +7,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
 import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import {
   Dialog,
   DialogContent,
@@ -18,7 +26,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { Plus, Edit, Trash2, Upload } from "lucide-react"
+import { Plus, Edit, Trash2, Upload, TriangleAlert } from "lucide-react"
 import { toast } from "sonner"
 import Image from "next/image"
 import { addNewPromotionalTagApi, deletePromotionAtIdApi, getAllPromotionalTags, getAllPromotionalTagsApi, togglePromotionStatusApi, UpdateOrAddPromotionalTagApi, updatePromotionalTagApi, UpdatePromotionalTagApi } from "@/service/promotionTags.service"
@@ -28,6 +36,7 @@ import { promotionalTagSchema } from "@/lib/validations"
 import { z } from "zod"
 import { envConfig } from "@/lib/envConfig"
 import RichTxtEditor from "@/components/richTxtEditor/RichTxtEditor"
+import { STATUS_CODES } from "@/app/constants/errorConstants"
 
 export function PromotionalTags() {
     
@@ -48,16 +57,15 @@ export function PromotionalTags() {
     setShowDialog(true)
   }
 
-  const handleDelete = async(id: string) => {
-    const res = await deletePromotionAtIdApi(id);
+  const handleDelete = async(id: string, overrideDelete?:boolean) => {
+    const res = await deletePromotionAtIdApi(id, overrideDelete);
 
-    if(!res) {
-      return
+    if(res != 200) {
+      return res
     }
+
     setTags(tags.filter((tag) => tag.id !== id))
-    toast("Tag deleted", {
-      description: "Promotional tag has been deleted successfully.",
-    })
+    return 200
   }
 
   const handleToggle = async(tagClicked:Section) => {
@@ -90,7 +98,7 @@ export function PromotionalTags() {
       } else if(formMode === 'add') {
         const newTag = await addNewPromotionalTagApi(values);
 
-        if(!newTag)  {
+        if(newTag === null)  {
           throw new Error("Failed to add new promotion")
         }
         setTags([...tags, newTag]);
@@ -120,6 +128,7 @@ export function PromotionalTags() {
   }
 
   const openCreateDialog = () => {
+    setSelectedTag(null)
     setFormMode('add')
     setShowDialog(true)
   }
@@ -143,7 +152,7 @@ export function PromotionalTags() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {tags.length > 0 && tags.map((tag) => (
+        {tags && tags.map((tag) => (
           <Card key={tag.id}>
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
@@ -166,10 +175,11 @@ export function PromotionalTags() {
                   <Edit className="mr-2 h-4 w-4" />
                   Edit
                 </Button>
-                <Button variant="outline" size="sm" onClick={() => handleDelete(tag.id)}>
+                {/* <Button variant="outline" size="sm" onClick={() => handleDelete(tag.id)}>
                   <Trash2 className="mr-2 h-4 w-4" />
                   Delete
-                </Button>
+                </Button> */}
+                <AlertDeletePopup handleDelete={handleDelete} tagId={tag.id}/>
               </div>
             </CardContent>
           </Card>
@@ -179,60 +189,62 @@ export function PromotionalTags() {
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>{formMode ? "Edit Promotional Tag" : "Create Promotional Tag"}</DialogTitle>
+            <DialogTitle>{formMode === 'edit' ? "Edit Promotional Tag" : "Create Promotional Tag"}</DialogTitle>
             <DialogDescription>
-              {formMode ? "Update the promotional tag details." : "Create a new promotional tag for your site."}
+              {formMode === 'edit' ? "Update the promotional tag details." : "Create a new promotional tag for your site."}
             </DialogDescription>
           </DialogHeader>
 
-          <PromotionalTagForm onSubmit={handleSubmit} onCancel={closeDialogBox} initialValues={{
+          { formMode && <PromotionalTagForm onSubmit={handleSubmit} onCancel={closeDialogBox} mode={formMode} initialValues={{
             name:selectedTag?.name ?? '',
             description : selectedTag?.description ?? '',
             imageUrl : selectedTag?.imageUrl || null,
             isActive : selectedTag?.isActive ?? false
-            }} />
-          {/* <form onSubmit={handleSubmit}>
-            <div className="grid gap-4 py-4">
-              <div className="space-y-2">
-                <Label htmlFor="tag-name">Name</Label>
-                <Input
-                  id="tag-name"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="tag-description">Description</Label>
-                <Textarea
-                  id="tag-description"
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  rows={3}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>Image</Label>
-                <div className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-4 text-center">
-                  <Upload className="mx-auto h-8 w-8 text-muted-foreground" />
-                  <div className="mt-2">
-                    <Button type="button" variant="outline" size="sm">
-                      Upload Image
-                    </Button>
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-2">PNG, JPG up to 2MB</p>
-                </div>
-              </div>
-            </div>
-            <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => setShowDialog(false)}>
-                Cancel
-              </Button>
-              <Button type="submit">{formMode ? "Update Tag" : "Create Tag"}</Button>
-            </DialogFooter> */}
-          {/* </form> */}
+            }} />}
         </DialogContent>
       </Dialog>
     </div>
+  )
+}
+
+// --------------------------------------------------------------------------------------
+
+const AlertDeletePopup  = ( {tagId, handleDelete}:{tagId:string, handleDelete: (id:string, overrideDelete?:boolean)=> Promise<number>}) => {
+  
+  const [openDialog, setOpenDialog] = useState(false)
+
+  const handleOnClick = async() => {
+   const statusCode = await handleDelete(tagId);
+
+   if(statusCode === STATUS_CODES.CONFLICT) {
+    setOpenDialog(true);
+   }
+  }
+
+
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button variant="outline" size="sm" onClick={handleOnClick}>
+          <Trash2 className="mr-2 h-4 w-4" />
+          Delete
+        </Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle className="flex gap-2">
+            {/* <TriangleAlert className="text-foreground/80"/> */}
+            Are you absolutely sure? 
+          </AlertDialogTitle>
+          <AlertDialogDescription>
+            This action cannot be undone. This will permanently delete the promotion.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction onClick={() => handleDelete(tagId, true)}>Continue</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   )
 }

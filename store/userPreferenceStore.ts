@@ -14,14 +14,13 @@ type UserPreferenceState = {
   clearSelectedAddressId: () => void;
 };
 
-
 export const useUserPreferenceStore = create<UserPreferenceState>()(
   persist(
     (set) => ({
       selectedAddressId: null,
 
       setSelectedAddressId: (id) => set({ selectedAddressId: id }),
-      clearSelectedAddressId: () => set({ selectedAddressId: '' }),
+      clearSelectedAddressId: () => set({ selectedAddressId: null }), // use null for consistency
     }),
     {
       name: 'user-preference-st', // key in localStorage
@@ -29,6 +28,7 @@ export const useUserPreferenceStore = create<UserPreferenceState>()(
     }
   )
 );
+
 
 export const useDialogStateStore = create<DialogMenu>() ((set) => ({
       isOpen: false,

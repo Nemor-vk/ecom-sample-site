@@ -15,6 +15,46 @@ import { Button } from '@/components/ui/button'
 import { MoreHorizontal } from 'lucide-react'
 import Link from 'next/link'
 import { toast } from "sonner"
+import { Badge } from '@/components/ui/badge'
+import { Switch } from '@/components/ui/switch'
+import { ExtendedCategory } from '@/prisma/extendedModelTypes'
+
+const ToggleCategoryAvailability = ({ category }: { category: ExtendedCategory }) => {
+    const [categoryData, setCategoryData] = useState<ExtendedCategory>(category);
+
+    const handleToggleAvailability = () => {
+      const updatedProduct = {
+        ...categoryData,
+        availableForPurchase: !categoryData.isActive,
+      };
+      setCategoryData(updatedProduct);
+      toast("Product updated", {
+        description: "Product availability has been changed.",
+      });
+    };
+
+    return (
+      <div className="flex items-center space-x-2">
+        <Badge
+          variant={
+            categoryData.isActive
+              ? "default"
+              : "destructive"
+          }
+        >
+          {categoryData.isActive
+            ? "Active"
+            : "In-Active"
+          }
+        </Badge>
+        <Switch
+          checked={categoryData.isActive || false}
+          onCheckedChange={handleToggleAvailability}
+          className="cursor-pointer"
+        />
+      </div>
+    );
+  };
 
 const categoryTable: ColumnDef<Category>[] = [
     {

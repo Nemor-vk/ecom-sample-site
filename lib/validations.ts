@@ -5,6 +5,7 @@ import { z } from "zod";
 export const productSchema = z.object({
     name : z.string().trim().min(2).max(100),
     description: z.string().trim().min(10),
+    originalPrice: z.coerce.number().nonnegative(), // Optional field for original price
     price : z.coerce.number().refine(value => Number(value.toFixed(2)) === value, {
       message: "Price must have at most 2 decimal places.",
     }),
@@ -170,7 +171,7 @@ export const discountSchema = z.object({
   name: z.string().min(1, "Display name is required"),
   description: z.string().optional(),
   type: z.enum(["PERCENTAGE", "FIXED_AMOUNT", "FREE_SHIPPING", "BUY_X_GET_Y"]),
-  value: z.number().optional(),
+  value: z.coerce.number().optional(),
   minOrderAmount: z.coerce.number().optional(),
   maxDiscountAmount: z.coerce.number().optional(),
   usageLimit: z.coerce.number().min(1),

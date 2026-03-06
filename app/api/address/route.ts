@@ -30,8 +30,10 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     const { searchParams } = new URL(req.url);
     const userId = searchParams.get("userId");
 
-    if(!userId) {
-      throw new Error("Params Are Undefined")
+    if(!userId || userId.length === 0) {
+      return NextResponse.json(
+      { error: "Required parameter missing" , success:false, status:400}
+    );
     }
 
     const allAddress = await getAllAddressForUserId(userId)
@@ -41,7 +43,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
     console.error(error); // Better logging for error
     return NextResponse.json(
-      { error: "Failed to get all address" , success:false, status:500}
+      { error: "Failed to Fetch all address - INTERNAL ERROR" , success:false, status:500}
     );
   }
 }

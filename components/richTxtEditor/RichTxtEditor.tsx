@@ -39,7 +39,7 @@ const RichTxtEditor = ({onChange, content, isEditable, className} : {onChange?: 
         content: content,
         editorProps : {
             attributes : {
-                class : cn('py-1 px-2 min-h-[120px] outline-none rounded-md text-sm border-input border-1 transition-[color,box-shadow] shadow-xs focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] ',className)
+                class : cn('py-1 px-0 min-h-[120px] outline-none rounded-md text-sm border-input border-1 transition-[color,box-shadow] shadow-xs focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] ',className)
             }
         },
         immediatelyRender: false,

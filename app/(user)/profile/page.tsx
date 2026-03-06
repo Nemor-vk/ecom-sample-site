@@ -10,7 +10,7 @@ import Image from "next/image";
 import { findOrdersByUserId, getAllOrders } from "@/prisma/repository/orderRepo";
 import { ExtendedOrder } from "@/prisma/extendedModelTypes";
 import { CHARGES } from "@/app/constants";
-import { calculateDiscountAmount } from "@/lib/discount-utils";
+import { calculateDiscountAmount, calculateTotalSavings } from "@/lib/discount-utils";
 import { User } from "@/generated/prisma";
 import { calculateAge } from "@/lib/utils";
 import { IronSessionData } from "iron-session";
@@ -142,13 +142,8 @@ const PageStats = async ({ordersData}: {ordersData: ExtendedOrder[]}) => {
     totalSavings: 1200,
   };
   const totalOrders = ordersData.length;
-  const totalSpent = ordersData.reduce((acc, order) => acc + parseFloat(order.paymentTotal.toString()), 0);
-  const totalSavings = ordersData.reduce((acc, order) => {
-    if (order.discount) {
-      return calculateDiscountAmount(order.discount, Number(order.paymentTotal), CHARGES.SHIPPING) + acc;
-    }
-    return acc;
-  }, 0);
+  const totalSpent = ordersData.reduce((acc, order) => acc + parseFloat(order.paymentTotal.toString()), 0).toFixed(2);
+  const totalSavings = calculateTotalSavings(ordersData).toFixed(2);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

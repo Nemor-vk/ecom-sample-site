@@ -60,9 +60,23 @@ export async function getAllCategories() {
 }
 
 export const addNewCategory = async (categoryJson: Category) => {
-  const category = await db.category.create({
-    data: { ...categoryJson, productCount: 1 },
-  });
+  try {
+    const category = await db.category.create({
+      data: {
+        name: categoryJson.name,
+        description: categoryJson.description,
+        imageUrl: categoryJson.imageUrl,
+        isActive: categoryJson.isActive,
+        parentId: categoryJson.parentId || null,
+      },
+    });
+
+    console.log("New Category Added: ", category);
+    return true;
+  } catch (error) {
+    console.error("Error Adding New Category:", (error as Error)?.message ?? error);
+    return null;
+  }
 };
 
 export async function updateExistingCategory(categoryData: ExtendedCategory) {

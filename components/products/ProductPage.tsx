@@ -9,17 +9,18 @@ import { ProductRating } from "./ProductRating"
 import { ProductOffers } from "./ProductOffers"
 import { ProductFeatures } from "./ProductFeatures"
 import { QuantitySelector } from "../ui/custom/quantity-selector"
-import { Product } from "@/generated/prisma"
-import { ExtendedProduct } from "@/prisma/extendedModelTypes"
 import { CURRENCY } from "@/app/constants"
 import { useCartStore } from "@/store/cartStore"
 import Link from "next/link"
+import { toast } from "sonner"
+import { SerializedProduct } from "@/lib/serializers/product.serialize"
 
-export default function ProductPage({product}: {product:ExtendedProduct}) {
-  const {cartItems, addToCart} = useCartStore();
+export default function ProductPage({product}: {product:SerializedProduct}) {
+  const {cartItems, addToCart, onQuantityChange} = useCartStore();
   const selectedCartItem = cartItems.find((cartItem) => cartItem.id === product.id);
   const [isWishlisted, setIsWishlisted] = useState(false)
-  const [quantity, setQuantity] = useState(1); //product quantity
+  const doesProductExistInCart = cartItems.find(item => item.product.id === product.id);
+  const [quantity, setQuantity] = useState( doesProductExistInCart ? doesProductExistInCart.quantity  : 1); //product quantity
 
   const offers = [
     {
@@ -83,12 +84,15 @@ export default function ProductPage({product}: {product:ExtendedProduct}) {
 
   const handleAddToCart = () => {
     addToCart(product);
-    console.log("Added to cart:", { product, quantity })
+    onQuantityChange(product.id , quantity)
+    toast.success("Product added to cart", {description: product.name + 'added to your cart'})
   }
 
   const handleBuyNow = () => {
     addToCart(product);
+    onQuantityChange(product.id , quantity)
     console.log("Buy now:", { product, quantity })
+    // console.log("Buy now:", { product, quantity })
   }
 
   const handleShare = () => {
@@ -101,14 +105,14 @@ export default function ProductPage({product}: {product:ExtendedProduct}) {
     }
   }
 
-  const discountPercentage = Math.round(((10000 - Number(product.price)) / 10000) * 100)
+  const discountPercentage = Math.round(((Number(product.originalPrice) - Number(product.price)) / Number(product.originalPrice)) * 100)
 
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="grid lg:grid-cols-2 gap-12">
         {/* Product Gallery */}
         <div className="space-y-6">
-          <ProductGallery images={product.image.map((img) => img.url)} productName={product.name} />
+          <ProductGallery images={product.image?.map((img) => img.url) ?? ''} productName={product.name} />
         </div>
 
         {/* Product Details */}
@@ -141,19 +145,19 @@ export default function ProductPage({product}: {product:ExtendedProduct}) {
               <div className="flex items-baseline gap-3">
                 <span className="text-3xl font-bold text-gray-900 dark:text-foreground">
                   {CURRENCY.INR}
-                  {product.price.toLocaleString()}
+                  {product.price}
                 </span>
-                <span className="text-lg text-gray-500 line-through">
+                <span className={`${product.originalPrice ? 'text-lg text-gray-500 line-through' : 'hidden' }`}>
                   {CURRENCY.INR}
-                  {'10000'}
+                  {product.originalPrice && product.originalPrice}
                 </span>
-                <Badge variant="destructive" className="text-sm">
+                <Badge variant="destructive" className={`${product.originalPrice ? 'text-sm' : 'hidden' }`}>
                   {discountPercentage}% OFF
                 </Badge>
               </div>
-              <p className="text-sm text-green-600 font-medium dark:text-green-400">
+              <p className={`${product.originalPrice ? "text-sm text-green-600 font-medium dark:text-green-400" : "hidden"}`}>
                 You save {CURRENCY.INR}
-                {(10000- Number(product.price)).toLocaleString()}
+                {(Number(product.originalPrice) - Number(product.price)).toFixed(2)}
               </p>
             </div>
 
@@ -182,10 +186,11 @@ export default function ProductPage({product}: {product:ExtendedProduct}) {
                 onClick={handleAddToCart}
                 variant="outline"
                 size="lg"
-                className="h-12 font-semibold border-2 hover:bg-gray-50 bg-transparent"
+                className={"h-12 font-semibold border-2 hover:bg-gray-50 bg-transparent"}
+                disabled={doesProductExistInCart && true}
               >
                 <ShoppingCart className="h-5 w-5 mr-2" />
-                Add to Cart
+                { doesProductExistInCart ? "Item Already In Cart" : "Add to Cart"}
               </Button>
               <Button
                 asChild

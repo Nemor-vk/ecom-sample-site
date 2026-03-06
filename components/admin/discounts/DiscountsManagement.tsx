@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Discount } from "@/generated/prisma"
 import { ExtendedDiscount } from "@/prisma/extendedModelTypes"
+import { API_CONFIG } from "@/app/constants/apiContants"
 
 export function DiscountsManagement() {
   const [discounts, setDiscounts] = useState<ExtendedDiscount[]>([])
@@ -61,7 +62,13 @@ export function DiscountsManagement() {
         type: typeFilter,
       })
 
-      const response = await fetch(`/api/discounts`)
+      const response = await fetch("/api/discounts", {
+        method: "GET",
+        headers: {
+          "x-site-origin": API_CONFIG.ALLOWED_ORIGIN,
+          "x-client-key": API_CONFIG.CLIENT_KEY,
+        },
+      });
       if (!response.ok) throw new Error("Failed to fetch discounts")
 
       const data = await response.json()

@@ -10,6 +10,7 @@ import { CartItemType } from "@/types/types"
 import { useCartStore } from "@/store/cartStore"
 import { envConfig } from "@/lib/envConfig"
 import RichTxtEditor from "../richTxtEditor/RichTxtEditor"
+import { formatCurrencyToINR } from "@/lib/utils"
 
 interface CartItemProps {
   item: CartItemType
@@ -37,7 +38,7 @@ export function CartItem({ item }: CartItemProps) {
 
           <div className="flex-1 min-w-0">
             <h3 className="font-semibold text-lg truncate">{product.name}</h3>
-            <RichTxtEditor content={product.description || 'No Description'} isEditable={false} className="text-sm text-muted-foreground line-clamp-2 inline-block min-h-0 p-0 border-0 rounded-none" />
+            <RichTxtEditor content={product.description || 'No Description'} isEditable={false} className="text-sm text-muted-foreground line-clamp-1 inline-block min-h-0 p-2 border-0 rounded-none" />
             <div className="flex flex-wrap gap-1 mt-2">
               {product.productTags.slice(0, 3).map((tag) => (
                 <span key={tag} className="px-2 py-1 bg-secondary text-secondary-foreground text-xs rounded-full">
@@ -49,8 +50,8 @@ export function CartItem({ item }: CartItemProps) {
 
           <div className="flex flex-col items-end space-y-2">
             <div className="text-right">
-              <p className="text-sm text-muted-foreground">${Number(product.price).toFixed(2)} each</p>
-              <p className="font-semibold text-lg">${totalPrice.toFixed(2)}</p>
+              <p className="text-sm text-muted-foreground">{formatCurrencyToINR(Number(product.price))} each</p>
+              <p className="font-semibold text-lg">{formatCurrencyToINR(Number(totalPrice.toFixed(2)))}</p>
             </div>
 
             <QuantitySelector

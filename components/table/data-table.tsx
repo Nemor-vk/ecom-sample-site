@@ -88,8 +88,8 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="w-full space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="flex flex-1 items-center space-x-2">
+      <div className="flex items-start justify-between gap-2">
+        <div className="flex flex-wrap md:flex-1 items-center gap-2">
           <div className="relative">
             <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
@@ -99,29 +99,31 @@ export function DataTable<TData, TValue>({
               className="pl-8 max-w-sm"
             />
           </div>
-          {filterableColumns.map((column) => (
-            <Select
-              key={column.id}
-              value={(table.getColumn(column.id)?.getFilterValue() as string) ?? ""}
-              onValueChange={(value) => table.getColumn(column.id)?.setFilterValue(value === "all" ? "" : value)}
-            >
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder={`Filter by ${column.title}`} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All {column.title}</SelectItem>
-                {column.options.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          ))}
+          <div className="hidden gap-2 md:flex">
+            {filterableColumns.map((column) => (
+              <Select
+                key={column.id}
+                value={(table.getColumn(column.id)?.getFilterValue() as string) ?? ""}
+                onValueChange={(value) => table.getColumn(column.id)?.setFilterValue(value === "all" ? "" : value)}
+              >
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder={`Filter by ${column.title}`} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All {column.title}</SelectItem>
+                  {column.options.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            ))}
+          </div>
         </div>
         <div className="flex items-center space-x-2">
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+            <DropdownMenuTrigger asChild className="hidden md:flex">
               <Button variant="outline" className="ml-auto bg-transparent">
                 <Eye className="mr-2 h-4 w-4" />
                 View <ChevronDown className="ml-2 h-4 w-4" />
@@ -192,13 +194,16 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
+
+      {/* PAGINATION SECTION */}
       <div className="flex items-center justify-between space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">
           {table.getFilteredSelectedRowModel().rows.length} of {table.getFilteredRowModel().rows.length} row(s)
           selected.
         </div>
         <div className="flex items-center space-x-6 lg:space-x-8">
-          <div className="flex items-center space-x-2">
+          {/* Page Additonal row info hidden for sm screens */}
+          <div className="items-center space-x-2 hidden md:flex">
             <p className="text-sm font-medium">Rows per page</p>
             <Select
               value={`${table.getState().pagination.pageSize}`}

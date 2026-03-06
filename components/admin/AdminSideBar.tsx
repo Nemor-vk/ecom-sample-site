@@ -35,12 +35,12 @@ const AdminSideBar = () => {
                 </SidebarMenuButton>
               </SidebarMenuItem>
             ))}
-            <SidebarMenuItem>
+            {/* <SidebarMenuItem>
                 <SidebarMenuButton onClick={signOutAndDeleteSessions} className='flex items-center gap-3 p-4 py-7 rounded-xl text-base'>
                     <LogOut/>
                     <span>Sign Out</span>
                 </SidebarMenuButton>
-            </SidebarMenuItem>
+            </SidebarMenuItem> */}
           </SidebarMenu>
         </SidebarGroupContent>
       </SidebarGroup>

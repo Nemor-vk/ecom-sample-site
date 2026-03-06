@@ -3,6 +3,8 @@
 import { ArrowRight, Package, ShoppingBag } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { redirect } from "next/navigation";
+
 
 interface ActionButtonsProps {
   orderNumber: string
@@ -13,12 +15,13 @@ export function ActionButtons({ orderNumber }: ActionButtonsProps) {
     // Navigate to shop/products page
     console.log("Navigating to shop...")
     // In real app: router.push('/shop') or window.location.href = '/shop'
+    redirect("/");
   }
 
   const handleTrackOrder = () => {
     // Navigate to order tracking page
     console.log(`Tracking order: ${orderNumber}`)
-    // In real app: router.push(`/orders/${orderNumber}/track`)
+    redirect("/profile/orders");
   }
 
   return (

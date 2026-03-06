@@ -1,3 +1,4 @@
+import { Order } from "@/generated/prisma";
 import { ExtendedOrder } from "@/prisma/extendedModelTypes";
 import { createNewOrder, getAllOrders } from "@/prisma/repository/orderRepo";
 import { OrderRequestModel } from "@/types/types";
@@ -5,7 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 interface OrderResponseInterface {
     message : string,
-    order? : ExtendedOrder[],
+    order? : Order | Order[] | null,
 }
 
 
@@ -43,7 +44,7 @@ export async function POST(req: NextRequest): Promise<NextResponse<OrderResponse
     }
 
     return NextResponse.json(
-      { order: [newOrder], message: "✅ Order created successfully!" },
+      { order: newOrder, message: "✅ Order created successfully!" },
       { status: 201 }
     );
   } catch (error) {

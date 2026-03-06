@@ -1,9 +1,10 @@
 import { Address, Product } from "@/generated/prisma"
+import { SerializedProduct } from "@/lib/serializers/product.serialize"
 import { ExtendedOrder, ExtendedProduct } from "@/prisma/extendedModelTypes"
 
 export interface CartItemType {
   id: string
-  product: Product
+  product: SerializedProduct
   quantity: number
 }
 

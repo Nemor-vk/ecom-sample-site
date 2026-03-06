@@ -4,6 +4,7 @@ import { OrderItem, Product } from "@/generated/prisma/wasm"
 import { ExtendedOrder, ExtendedOrderItem } from "@/prisma/extendedModelTypes"
 import { ColumnDef } from "@tanstack/react-table"
 import { X } from "lucide-react"
+import { formatCurrencyToINR } from "../utils"
 
  export const orderColumns: ColumnDef<ExtendedOrder>[] = [
     
@@ -59,7 +60,7 @@ import { X } from "lucide-react"
       header: ({ column }) => <SortableHeader column={column}>Total</SortableHeader>,
       cell: ({ row }) => {
         const total = Number.parseFloat(row.getValue("paymentTotal"))
-        return <div className="font-medium">${total.toFixed(2)}</div>
+        return <div className="font-medium">{formatCurrencyToINR(Number(total.toFixed(2)))}</div>
       },
     },
     {

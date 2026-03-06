@@ -1,5 +1,7 @@
 import { addNewPromotionalTag, deletePromotionAtId, updatePromotionalTag } from "@/prisma/repository/sectionRepo";
+import { getSession } from "next-auth/react";
 import { NextRequest, NextResponse } from "next/server";
+import { auth } from "../../auth/[...nextauth]/route";
 
 export async function PUT(req: NextRequest, { params }: { params: { tagId: string } }) {
 
@@ -23,15 +25,19 @@ export async function PUT(req: NextRequest, { params }: { params: { tagId: strin
 export async function DELETE(req: NextRequest ,{ params }: { params: { tagId: string } }) {
 
     const { tagId } = await params;
+    const url = new URL(req.url);
+    const override = url.searchParams.get('override') as string;
+    const session = await auth();
 
     try {
 
-      const res = await deletePromotionAtId(tagId)
+      const res = await deletePromotionAtId(tagId, session?.user, override === 'true' )
       console.log("Promotional Tag Response ", res)
+      console.log("Promotional API backend User Role ", session?.user?.role)
   
-      return NextResponse.json({ message: 'Promotioal Tag Details Deleted Successfully!' }, { status: 200 });
-    } catch (error) {
+      return NextResponse.json({ message: res.message }, { status: res.code });
+    } catch (error:any) {
       console.error(error);
-      return NextResponse.json({ message: 'Failed to Delete Promotioal Tag' }, { status: 500 });
+      return NextResponse.json({ message: 'Failed to Delete Promotional Tag' }, { status: error?.code || 500 });
     }
 }

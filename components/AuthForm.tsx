@@ -16,11 +16,12 @@ import { Button } from './ui/button';
 import { Input } from './ui/input'
 import { SITE_ROLES, STORE_NAME } from '@/app/constants'
 import { toast } from 'sonner'
-import { redirect, useRouter } from 'next/navigation'
+import { redirect, usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { getIronSessionDecodedCookie } from '@/lib/ironSession'
 import { Session, User } from 'next-auth'
 import { callUpdateIronSessionApi } from '@/lib/clientLogin'
 import { signOut } from 'next-auth/react'
+// import { useRouter } from 'next/router'
 
 
 interface Props<T extends FieldValues> {
@@ -31,8 +32,6 @@ interface Props<T extends FieldValues> {
 }
 
 const AuthForm = <T extends FieldValues>({formType, defaultValues, onSubmit, schema}: Props<T>) => {
-
-    const router = useRouter();
 
     // 1. Define your form.
     const form: UseFormReturn<T> = useForm({
@@ -48,7 +47,6 @@ const AuthForm = <T extends FieldValues>({formType, defaultValues, onSubmit, sch
 
         if(result.success) {
 
-            // const {isAuthenticated, user} = await getIronSessionDecodedCookie();
             // console.log("result before login :: IRON COOKIE -", user)
             const ironSessionStatus = await callUpdateIronSessionApi();
             console.log("Response after login :", ironSessionStatus)
@@ -59,17 +57,6 @@ const AuthForm = <T extends FieldValues>({formType, defaultValues, onSubmit, sch
                 description: `${result.error}`
                 })
             }
-                    
-            // toast.success('Success', {
-            //     description: formType === 'SIGNIN' ? 'You have successfully Signed In' : 'Account Created Succcessfully'
-            // })
-
-            //  setTimeout(() => {
-            //     //  router.push('/');
-
-            //      router.refresh(); // ✅ ensures the new page is re-fetched
-            // }, 2000); // ⏱️ 3-second delay
-
 
         } else {
             toast.error(`Error ${formType === 'SIGNIN' ? 'Signin-In' : 'Signin-Up'}`, {

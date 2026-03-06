@@ -4,7 +4,7 @@ import { Minus, Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useCartStore } from "@/store/cartStore"
 import { useState } from "react"
-import { ExtendedProduct } from "@/prisma/extendedModelTypes"
+import { toast } from "sonner"
 
 interface QuantitySelectorProps {
   min?: number
@@ -16,14 +16,16 @@ interface QuantitySelectorProps {
 
 export function QuantitySelector({quantity,  min = 1, max = 99, productId, onQuantityChange}: QuantitySelectorProps) {
 
-  // const [quantity, setQuantity] = useState<number>(min);
+  
+  const {increaseQuantity, decreaseQuantity, cartItems} = useCartStore();
+  const doesProductExistInCart = cartItems.find(item => item.product.id === productId);
 
-  const {increaseQuantity, decreaseQuantity} = useCartStore();
   const handleDecrease = () => {
     if (quantity > min) {
       decreaseQuantity(productId)
-      // setQuantity(quantity - 1)
       onQuantityChange(quantity-1)
+
+      toastNotification()
     }
   }
 
@@ -32,7 +34,14 @@ export function QuantitySelector({quantity,  min = 1, max = 99, productId, onQua
     if (quantity < max) {
       increaseQuantity(productId)
       onQuantityChange(quantity + 1)
+
+      toastNotification()
     }
+  }
+
+  const toastNotification = () => {
+    if(doesProductExistInCart)
+      toast.info("Item Quantity Updated", {description: doesProductExistInCart.product.name + " Quantity Updated "})
   }
 
   return (

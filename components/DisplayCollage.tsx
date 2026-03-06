@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils'
 
 const DisplayCollage = () => {
   return (
-    <div className='grid grid-cols-1 md:grid-cols-2 grid-rows-2 items-center justify-center gap-1 md:gap-4 grid-flow-dense my-10 lg:my-12 md:aspect-6/2.7 w-full md:max-h-[800px]'>
+    <div className='grid grid-cols-1 md:grid-cols-2 grid-rows-2 items-center justify-center gap-1 md:gap-4 grid-flow-dense my-10 lg:my-12 md:aspect-6/2.7 w-[89.5vw] md:max-h-[800px]'>
       {COLLAGE_PROMO.map((collageItem) => (
         <div className={`h-full capitalize rounded-[6px] relative ${collageItem.spanClass}`} key={collageItem.title}>
           <Image src={collageItem.imgPath} fill  style={{ objectFit: 'cover' }} alt='card' className='rounded-md' sizes={DEFAULT_IMG_SIZES}/>

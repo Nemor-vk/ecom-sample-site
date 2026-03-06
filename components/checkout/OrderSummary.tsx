@@ -4,6 +4,7 @@ import { Separator } from "@/components/ui/separator"
 import { calculateOrderTotals } from "@/lib/discount-utils"
 import type { CartItem, Discount } from "@/lib/types"
 import { envConfig } from "@/lib/envConfig"
+import { formatCurrencyToINR } from "@/lib/utils"
 
 interface OrderSummaryProps {
   items: CartItem[]
@@ -36,7 +37,7 @@ export function OrderSummary({ items, discount }: OrderSummaryProps) {
                 <p className="text-sm font-medium truncate">{item.product.name}</p>
                 <p className="text-xs text-muted-foreground">Qty: {item.quantity}</p>
               </div>
-              <p className="text-sm font-medium">${(item.product.price * item.quantity).toFixed(2)}</p>
+              <p className="text-sm font-medium">{formatCurrencyToINR(Number((item.product.price * item.quantity).toFixed(2)))}</p>
             </div>
           ))}
         </div>
@@ -47,24 +48,24 @@ export function OrderSummary({ items, discount }: OrderSummaryProps) {
         <div className="space-y-2">
           <div className="flex justify-between text-sm">
             <span>Subtotal ({items.length} items)</span>
-            <span>${subtotal.toFixed(2)}</span>
+            <span>{formatCurrencyToINR(Number(subtotal.toFixed(2)))}</span>
           </div>
 
           {discount && discountAmount > 0 && (
             <div className="flex justify-between text-sm text-green-600">
               <span>Discount ({discount.code})</span>
-              <span>-${discountAmount.toFixed(2)}</span>
+              <span>-{formatCurrencyToINR(Number(discountAmount.toFixed(2)))}</span>
             </div>
           )}
 
           <div className="flex justify-between text-sm">
             <span>Shipping</span>
-            <span>{shipping === 0 ? "Free" : `$${shipping.toFixed(2)}`}</span>
+            <span>{shipping === 0 ? "Free" : `${formatCurrencyToINR(Number(shipping.toFixed(2)))}`}</span>
           </div>
 
           <div className="flex justify-between text-sm">
             <span>Tax</span>
-            <span>${tax.toFixed(2)}</span>
+            <span>{formatCurrencyToINR(Number(tax.toFixed(2)))}</span>
           </div>
         </div>
 
@@ -72,7 +73,7 @@ export function OrderSummary({ items, discount }: OrderSummaryProps) {
 
         <div className="flex justify-between font-semibold text-lg">
           <span>Total</span>
-          <span>${total.toFixed(2)}</span>
+          <span>{formatCurrencyToINR(Number(total.toFixed(2)))}</span>
         </div>
       </CardContent>
     </Card>

@@ -3,14 +3,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { redirect } from 'next/navigation'
 import AuthContentPage from './AuthContentPage'
 import { auth } from '@/app/api/auth/[...nextauth]/route';
+import { User } from 'next-auth';
 
 export type LOGIN_TYPE = 'SIGNIN' | 'SIGNUP';
 const LOGIN_VALUES = { SIGNIN :"SIGNIN", SIGNUP: 'SIGNUP'}
 
 const page = async() => {
 
-  const session = await auth();
-  if(session) redirect("/");
+  const session:User = await auth();
 
   return (
     <div className='mt-5 flex justify-center items-center'>
@@ -21,11 +21,11 @@ const page = async() => {
         </TabsList>
 
         <TabsContent value={LOGIN_VALUES.SIGNIN}>
-          <AuthContentPage loginType={LOGIN_VALUES.SIGNIN as LOGIN_TYPE} />
+          <AuthContentPage loginType={LOGIN_VALUES.SIGNIN as LOGIN_TYPE} session={session} />
         </TabsContent>
 
         <TabsContent value={LOGIN_VALUES.SIGNUP}>
-          <AuthContentPage loginType={LOGIN_VALUES.SIGNUP as LOGIN_TYPE} />
+          <AuthContentPage loginType={LOGIN_VALUES.SIGNUP as LOGIN_TYPE} session={session} />
         </TabsContent>
         </Tabs>
     </div>
