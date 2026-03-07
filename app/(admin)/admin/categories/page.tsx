@@ -1,20 +1,12 @@
 import { CategoriesManagement } from '@/components/admin/categories/CategoriesManagement';
-import CategoryFormWrapper from '@/components/admin/categories/CategoryFormWrapper';
-import TableList from '@/components/admin/TableList'
-import { Button } from '@/components/ui/button'
-import { DialogBoxGeneric } from '@/components/ui/custom/dialog-box-starter';
-import { Category } from '@/generated/prisma';
-import categoryColumns from '@/lib/tableSchemas/categoryColumns';
 import { ExtendedCategory } from '@/prisma/extendedModelTypes';
-import { getAllCategories } from '@/prisma/repository/categoryRepo';
-import Link from 'next/link'
-import React, { useState } from 'react'
-import { toast } from 'sonner';
+import { fetchAllCategories } from '@/service/category.service';
+import React from 'react'
 
 
 const page = async () => {
 
-  const categories:ExtendedCategory[] = await getAllCategories();
+  const categories:ExtendedCategory[] = await fetchAllCategories();
 
   return (
     <div className='px-5'>
