@@ -10,7 +10,7 @@ interface OrderResponseInterface {
 }
 
 
-export async function GET(req: NextRequest, res: NextResponse): Promise<NextResponse<OrderResponseInterface>> {
+export async function GET(req: NextRequest): Promise<NextResponse<OrderResponseInterface>> {
     try {
 
       const allOrders = await getAllOrders();
