@@ -2,7 +2,7 @@ import { type NextRequest, NextResponse } from "next/server"
 import { updateDiscountDetails } from "@/prisma/repository/discountRepo"
 
 
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(request: NextRequest,  { params }: { params: Promise<{ id: string }> } ) {
   try {
     const body = await request.json()
     const {id} = await params;
