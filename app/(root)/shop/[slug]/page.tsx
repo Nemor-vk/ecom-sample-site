@@ -8,18 +8,21 @@ import ProductCard from '@/components/ProductCard';
 import { SerializedProduct } from '@/lib/serializers/product.serialize';
 import { fetchAllProducts, fetchProductByCategoryName } from '@/service/product.service';
 
+type PageParams = Promise<{ slug: string}>;
+
 interface PageProps {
-  params: {
-    slug: string;
-  };
+  params: PageParams;
+  // searchParams is also a Promise in Next 15+
+  // searchParams?: Promise<{ [key: string]: string | string[] | undefined }>; 
 }
 
 
 
 // {params: {slug : string}, props: {categories : Category[]}}
-const page = async({params} : PageProps) => {
+const page = async(pageProps : PageProps) => {
 
-    const {slug} = await params;
+    const params = await pageProps.params;
+    const { slug } = params;
 
     const categories: Category[] = await getAllCategories();
     const categoryNameList : string[] = categories.map(category => category.name.toLowerCase());
