@@ -11,7 +11,7 @@ export const callUpdateIronSessionApi = async () => {
     throw new Error('Site URL missing');
   }
 
-  const res = await fetch(`${webUrl}/api/login`, {
+  const res = await fetch(`/api/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     credentials: 'include', // 👈 ensures cookies are sent/received
@@ -34,7 +34,7 @@ export const callUpdateIronSessionApi = async () => {
 export const deleteIronSessionCookieApi = async() => {
 
   const webUrl = process.env.NEXT_PUBLIC_BASE_URL;
-  const response = await fetch(webUrl + '/api/logout/', { 
+  const response = await fetch(`/api/logout/`, { 
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     credentials: 'include', // 👈 ensures cookies are sent/received,
