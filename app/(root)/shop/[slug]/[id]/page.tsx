@@ -5,9 +5,17 @@ import ProductPage from '@/components/products/ProductPage';
 import { Separator } from '@/components/ui/separator';
 import { fetchProductById } from '@/service/product.service';
 
-const page = async({params} : {params: {id: string}}) => {
+interface PageProps {
+  params: {
+    slug: string;
+    id: string;
+  };
+}
 
-    const {id} = await params;
+
+const page = async({params} : PageProps) => {
+
+    const { slug, id } = params;
 
     const productItem = await fetchProductById(id);
 
