@@ -4,8 +4,14 @@ import { ThankYouPage } from '@/components/thankyou/ThankyouPage';
 import { fetchOrderByIdApi } from '@/service/orders.service';
 import React from 'react';
 
-const page = async({params} : {params: {order: string}}) => {
-  const orderId = params.order;
+type ThankYouParams = Promise<{ order: string }>;
+
+interface ThankYouProps {
+  params: ThankYouParams;
+}
+
+const page = async({params} : ThankYouProps) => {
+  const orderId = await params.then(p => p.order);
   const orderData = await fetchOrderByIdApi(orderId);
 
   return (
