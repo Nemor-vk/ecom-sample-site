@@ -8,10 +8,19 @@ import ProductCard from '@/components/ProductCard';
 import { SerializedProduct } from '@/lib/serializers/product.serialize';
 import { fetchAllProducts, fetchProductByCategoryName } from '@/service/product.service';
 
+interface PageProps {
+  params: {
+    slug: string;
+  };
+}
 
-const page = async({params} : {params: {slug : string}, props: {categories : Category[]}}) => {
+
+
+// {params: {slug : string}, props: {categories : Category[]}}
+const page = async({params} : PageProps) => {
 
     const {slug} = await params;
+
     const categories: Category[] = await getAllCategories();
     const categoryNameList : string[] = categories.map(category => category.name.toLowerCase());
     let products:SerializedProduct[] = []
