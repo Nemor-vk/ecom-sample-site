@@ -5,7 +5,7 @@ import ProductPage from '@/components/products/ProductPage';
 import { Separator } from '@/components/ui/separator';
 import { fetchProductById } from '@/service/product.service';
 
-interface PageProps {
+interface Props {
   params: {
     slug: string;
     id: string;
@@ -13,7 +13,7 @@ interface PageProps {
 }
 
 
-const page = async({params} : PageProps) => {
+const page = async({params} : Props) => {
 
     const { slug, id } = params;
 
