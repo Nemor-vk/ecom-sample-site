@@ -22,7 +22,7 @@ export async function PUT(req: NextRequest, { params }: { params:  Promise<{tagI
 }
 
 
-export async function DELETE(req: NextRequest ,{ params }: { params: { tagId: string } }) {
+export async function DELETE(req: NextRequest ,{ params }: { params: Promise<{ tagId: string }> }) {
 
     const { tagId } = await params;
     const url = new URL(req.url);

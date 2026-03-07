@@ -4,7 +4,7 @@ import { ExtendedProduct, ExtendedPromotionalTag } from "@/prisma/extendedModelT
 import { addNewPromotionalTag, ExtendedSectionlTagPrisma, getAllPromotionalTags } from "@/prisma/repository/sectionRepo";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: NextRequest, res: NextResponse) {
+export async function GET(req: NextRequest) {
     try {
 
       const sections : ExtendedSectionlTagPrisma[] = await getAllPromotionalTags();
