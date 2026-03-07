@@ -3,7 +3,7 @@ import { ExtendedProduct } from "@/prisma/extendedModelTypes";
 import { deleteProductById, findProductById, updateProduct } from "@/prisma/repository/productRepo";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }): Promise<NextResponse> {
+export async function GET(req: NextRequest,  { params }: { params: Promise<{ id: string }> } ): Promise<NextResponse> {
     try {
       const { id } = await params;
 
@@ -30,7 +30,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     }
   }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }): Promise<NextResponse> {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }>}): Promise<NextResponse> {
     try {
       const { id } = await params;
       // console.log("params " , params)
@@ -48,7 +48,7 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
     }
   }
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }): Promise<NextResponse> {
+export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }>} }): Promise<NextResponse> {
   try {
     const { id } = await params;
     

@@ -2,7 +2,7 @@ import { sanitizeProducts, SerializedProduct } from "@/lib/serializers/product.s
 import { findProductsByCategoryName } from "@/prisma/repository/productRepo";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: NextRequest, { params }: { params: { name: string } }): Promise<NextResponse> {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ name: string }> }): Promise<NextResponse> {
     try {
       const { name } = await params;
 
