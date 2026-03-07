@@ -1,11 +1,5 @@
-import ProductDrawer from '@/components/admin/products/ProductDrawer'
 import { ProductsManagement } from '@/components/admin/products/ProductManagement'
-import SidePopupDrawer from '@/components/admin/SidePopupDrawer'
-import TableList from '@/components/admin/TableList'
-import { Button } from '@/components/ui/button'
-import { productColumns } from '@/lib/tableSchemas/productColumns'
 import { ExtendedProduct } from '@/prisma/extendedModelTypes'
-import Link from 'next/link'
 import React from 'react'
 
 
