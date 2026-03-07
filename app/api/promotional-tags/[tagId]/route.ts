@@ -1,7 +1,7 @@
+import { auth } from "@/auth.config";
 import { addNewPromotionalTag, deletePromotionAtId, updatePromotionalTag } from "@/prisma/repository/sectionRepo";
 import { getSession } from "next-auth/react";
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "../../auth/[...nextauth]/route";
 
 export async function PUT(req: NextRequest, { params }: { params: { tagId: string } }) {
 

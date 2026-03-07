@@ -5,7 +5,7 @@ import ProductPage from '@/components/products/ProductPage';
 import { Separator } from '@/components/ui/separator';
 import { fetchProductById } from '@/service/product.service';
 
-// Define your params structure within a Promise - vercel fix for next 15 dynamic route params
+// Define your params structure within a Promise - vercel fix 
 type PageParams = Promise<{ slug: string; id: string }>;
 
 interface Props {

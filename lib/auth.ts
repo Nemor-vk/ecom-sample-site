@@ -1,6 +1,6 @@
 'use server'
 
-import { signIn } from "@/app/api/auth/[...nextauth]/route";
+import { auth } from "@/auth.config";
 import { addNewUser, findUserByEmail } from "@/prisma/repository/userRepo";
 import { hash } from "bcryptjs";
 import {AuthCredentials}  from "next-auth"

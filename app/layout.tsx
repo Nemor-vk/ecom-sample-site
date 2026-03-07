@@ -4,7 +4,7 @@ import "./globals.css";
 import { ReactNode } from "react";
 import { ThemeProvider } from "@/components/theme-provider";
 import { SessionProvider } from "next-auth/react"
-import { auth } from "./api/auth/[...nextauth]/route";
+import { auth } from "@/auth.config";
 
 const poppins = Poppins({
   variable: "--font-poppins",
