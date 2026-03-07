@@ -2,7 +2,7 @@ import Navbar from '@/components/Navbar'
 import NavMobile from '@/components/NavMobile'
 import React, { ReactNode, useEffect } from 'react'
 import { Toaster } from 'sonner'
-import { auth } from '../api/auth/[...nextauth]/route'
+import { auth } from '@/lib/config/auth.config'
 import { Footer } from '@/components/Footer'
 
 const layout = async({children} : {children: ReactNode}) => {

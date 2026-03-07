@@ -3,7 +3,7 @@ import { cookies, headers } from "next/headers";
 import { sessionOptions } from "@/lib/config/ironSessionConfig";
 import { Session, User } from "next-auth";
 import {  } from "@/lib/ironSession";
-import { auth } from "../auth/[...nextauth]/route";
+import { auth } from "@/lib/config/auth.config";
 
 export async function POST(req: Request) {
 

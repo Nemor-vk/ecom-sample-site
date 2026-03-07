@@ -5,7 +5,7 @@ import { Separator } from "@/components/ui/separator"
 import { redirect } from 'next/navigation'
 import BreadCrumbs from '@/components/BreadCrumbs'
 import UserSideBar from '@/components/user/UserSideBar'
-import { auth } from '../api/auth/[...nextauth]/route'
+import { auth } from '@/lib/config/auth.config'
 import { getIronSessionDecodedCookie } from '@/lib/ironSession'
 import UserNavbar from '@/components/user/UserNavbar'
 

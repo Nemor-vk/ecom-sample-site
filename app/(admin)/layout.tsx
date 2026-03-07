@@ -8,7 +8,7 @@ import { Separator } from "@/components/ui/separator"
 import { redirect, usePathname } from 'next/navigation'
 import BreadCrumbs from '@/components/BreadCrumbs'
 import { getIronSessionDecodedCookie } from '@/lib/ironSession'
-import { auth } from '../api/auth/[...nextauth]/route'
+import { auth } from '@/lib/config/auth.config'
 import { SITE_ROLES } from '../constants'
 
 const layout = async({children} : {children: ReactNode}) => {
@@ -16,6 +16,9 @@ const layout = async({children} : {children: ReactNode}) => {
   const ironSession = await getIronSessionDecodedCookie();
   const session = await auth();
   
+  if(process.env.DEBUG_MODE === "true") 
+  console.log("Admin Layout - Session :: ", session , " :: Iron Session :: ", ironSession)
+
   if (!session?.user || !ironSession.isAuthenticated || ironSession.user?.role != SITE_ROLES.AMDIN) redirect('/')
 
   return (

@@ -1,4 +1,4 @@
-import { auth } from "@/auth.config";
+import { auth } from "@/lib/config/auth.config";
 import { addNewPromotionalTag, deletePromotionAtId, updatePromotionalTag } from "@/prisma/repository/sectionRepo";
 import { getSession } from "next-auth/react";
 import { NextRequest, NextResponse } from "next/server";

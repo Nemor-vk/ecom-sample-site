@@ -37,6 +37,7 @@ const SliderComponent =  ({promotion, promotionName, className} : {promotion:Ext
         promo => promo.name.replace(/\s/g, '') === promotionName.replace(/\s/g, '')
     );
 
+    if(process.env.DEBUG_MODE === "true") 
     console.log("tag details slider wrapper ::", tag)
 
     return (

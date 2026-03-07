@@ -2,7 +2,7 @@ import React from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { redirect } from 'next/navigation'
 import AuthContentPage from './AuthContentPage'
-import { auth } from '@/app/api/auth/[...nextauth]/route';
+import { auth } from '@/lib/config/auth.config';
 import { User } from 'next-auth';
 
 export type LOGIN_TYPE = 'SIGNIN' | 'SIGNUP';

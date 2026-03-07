@@ -14,7 +14,9 @@ export async function fetchAllCategories() {
 
     const responseJson = await response.json();
 
-    console.log("Fetch Categories API Response: ", responseJson); // Log the entire response object
+    if(process.env.DEBUG_MODE === "true") {
+      console.log("Fetch Categories API Response: ", responseJson); // Log the entire response object
+    }
 
     if (response.status !== 200 || !response.ok) {
       console.log("Failed to fetch categories", responseJson);
