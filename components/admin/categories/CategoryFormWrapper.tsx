@@ -8,7 +8,7 @@ import { siteApiConfig, siteBaseApiUrl } from '@/lib/config/sitePathsConfig'
 import { useGenericDialogStore } from '@/store/tableActions'
 import { useRouter } from 'next/navigation'
 
-export const CategoryFormWrapper = ({ mode = 'add', initialValues, categoryId }: { mode?: 'add' | 'edit', categoryId: string, initialValues?: z.infer<typeof categorySchema> }) => {
+export const CategoryFormWrapper = ({ mode = 'add', initialValues, categoryId }: { mode?: 'add' | 'edit', categoryId?: string, initialValues?: z.infer<typeof categorySchema> }) => {
   
   const {close} = useGenericDialogStore();
   const router = useRouter();
