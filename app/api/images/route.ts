@@ -1,7 +1,6 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
+import { NextRequest, NextResponse } from "next/server";
 import ImageKit from 'imagekit';
 import { envConfig } from '@/lib/envConfig';
-import { NextResponse } from 'next/server';
 import { Image } from '@/generated/prisma';
 import { FileObject } from 'imagekit/dist/libs/interfaces';
 import { ImageResponseModel } from '@/models/ImageResponseModel';
@@ -18,7 +17,7 @@ export interface ImageApiResponseInterface {
   status: number;
 }
 
-export async function GET(req: NextApiRequest) : Promise<ImageApiResponseInterface> {
+export async function GET(req: NextRequest) : Promise<ImageApiResponseInterface> {
 
   const url = new URL(req.url!);
   const folder = url.searchParams.get('folder');
