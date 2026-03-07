@@ -5,38 +5,42 @@ import ProductPage from '@/components/products/ProductPage';
 import { Separator } from '@/components/ui/separator';
 import { fetchProductById } from '@/service/product.service';
 
+// Define your params structure within a Promise - vercel fix for next 15 dynamic route params
+type PageParams = Promise<{ slug: string; id: string }>;
+
 interface Props {
-  params: {
-    slug: string;
-    id: string;
-  };
+  params: PageParams;
+  // searchParams is also a Promise in Next 15+
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>; 
 }
 
 
-const page = async({params} : Props) => {
+const page = async ( props : Props) => {
+  // Await the params and searchParams before using them
+  const params = await props.params;
+  const { slug, id } = params;
 
-    const { slug, id } = params;
+  const productItem = await fetchProductById(id);
 
-    const productItem = await fetchProductById(id);
-
-    if(!productItem) {
-      return (<div>404</div>)
-    }
-  
+  if (!productItem) {
+    return <div>404</div>;
+  }
 
   return (
     <div>
       {/* TOP SECTION PAIR */}
       {/* <ProductPage product={productItem} productImages={productItem.image} productName={productItem.name} productRating={productItem.rating} productPrice={parseFloat(Number(productItem.price.toString()).toFixed(2))} /> */}
-      <ProductPage  product={productItem}/>
+      <ProductPage product={productItem} />
       {/* BOTTOM SECTION */}
 
-      <Separator className='my-7 border-2 border-foreground/40 rounded-full'/>
+      <Separator className="my-7 border-2 border-foreground/40 rounded-full" />
 
-      <ProductDesc content={productItem.description ?? "No Description to show"}/>
+      <ProductDesc
+        content={productItem.description ?? "No Description to show"}
+      />
     </div>
   );
-}
+};
 
 export default page
       // <Tabs defaultValue="description" className="w-full h-fit">
