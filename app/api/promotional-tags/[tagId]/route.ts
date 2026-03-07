@@ -3,7 +3,7 @@ import { addNewPromotionalTag, deletePromotionAtId, updatePromotionalTag } from 
 import { getSession } from "next-auth/react";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function PUT(req: NextRequest, { params }: { params: { tagId: string } }) {
+export async function PUT(req: NextRequest, { params }: { params:  Promise<{tagId: string}> }) {
 
     const { tagId } = await params;
 
