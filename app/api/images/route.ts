@@ -18,7 +18,7 @@ export interface ImageApiResponseInterface {
   status: number;
 }
 
-export async function GET(req: NextApiRequest, res: NextApiResponse) : Promise<ImageApiResponseInterface> {
+export async function GET(req: NextApiRequest) : Promise<ImageApiResponseInterface> {
 
   const url = new URL(req.url!);
   const folder = url.searchParams.get('folder');
