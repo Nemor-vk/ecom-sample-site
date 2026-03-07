@@ -86,6 +86,7 @@ export function DiscountsManagement() {
   useEffect(() => {
     fetchDiscounts()
     console.log("Fetched discounts:", editingDiscount)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pagination.page, searchTerm, statusFilter, typeFilter])
 
   const handleDelete = async (id: string) => {

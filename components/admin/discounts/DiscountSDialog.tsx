@@ -82,7 +82,6 @@ export function DiscountDialog({ open, onOpenChange, discount, onSuccess }: Disc
       fetchCategories();
       // setDiscount(discountValues);
     }
-    // eslint-disable-next-line
    }, [open, discount]);
 
    

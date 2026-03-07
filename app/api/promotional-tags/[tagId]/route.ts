@@ -36,7 +36,7 @@ export async function DELETE(req: NextRequest ,{ params }: { params: { tagId: st
       console.log("Promotional API backend User Role ", session?.user?.role)
   
       return NextResponse.json({ message: res.message }, { status: res.code });
-    } catch (error:any) {
+    } catch (error:unknown) {
       console.error(error);
       return NextResponse.json({ message: 'Failed to Delete Promotional Tag' }, { status: error?.code || 500 });
     }

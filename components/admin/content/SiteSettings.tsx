@@ -38,7 +38,7 @@ export function SiteSettings() {
       <Card>
         <CardHeader>
           <CardTitle>Basic Information</CardTitle>
-          <CardDescription>Configure your site's basic information and branding</CardDescription>
+          <CardDescription>Configure your site&apos;s basic information and branding</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
@@ -93,7 +93,7 @@ export function SiteSettings() {
       <Card>
         <CardHeader>
           <CardTitle>Media Assets</CardTitle>
-          <CardDescription>Upload and manage your site's logo and banner images</CardDescription>
+          <CardDescription>Upload and manage your site&apos;s logo and banner images</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-2 gap-4">

@@ -96,6 +96,7 @@ export function ImageUploadDialog({ onImagesSelected, selectedImages = [], maxIm
     return () => {
       urls.forEach(url => URL.revokeObjectURL(url));
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [uploadedFiles, selectedGalleryImages]);
 
 

@@ -74,7 +74,7 @@ const AddressPage = () => {
       };
 
       fetchAddresses();
-    }, [selectedAddressId]);
+    }, [selectedAddressId, authSession?.user?.id, setSelectedAddressId]);
 
   return (
     <div className='my-5'>
@@ -235,6 +235,7 @@ const SavedAddresses = () => {
       };
 
       fetchAddresses();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

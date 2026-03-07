@@ -357,7 +357,7 @@ export function ThemeManagement() {
                 <div className="space-y-0.5">
                   <Label htmlFor="auto-theme">Auto Theme Detection</Label>
                   <div className="text-sm text-muted-foreground">
-                    Automatically detect user's system theme preference
+                    Automatically detect user&apos;s system theme preference
                   </div>
                 </div>
                 <Switch

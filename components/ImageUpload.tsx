@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 'use client'
 
 import React, { useEffect, useRef, useState } from 'react'
@@ -46,10 +48,12 @@ const ImageUpload = ({onFileChange, folderName, imagePaths}: { onFileChange : (f
   //   }
   // }, [imagePaths]);
 
+ 
   const onError = (error: any) => {
     console.log(error);
     toast.error('Image Upload Failed')
   };
+
   const onSuccess = (res: any) => {
     console.log(res)
     console.log("images ", images)
@@ -66,7 +70,7 @@ const ImageUpload = ({onFileChange, folderName, imagePaths}: { onFileChange : (f
         e.preventDefault();
 
         if(ikUploadRef.current) {
-          //@ts-ignore
+          //@ts-expect-error
           ikUploadRef.current?.click();
         }
       }}
@@ -155,9 +159,9 @@ const UploadImageButton = ({UploadRef, btnText}:{UploadRef:React.Ref<HTMLDivElem
           size="sm"
           onClick={(e) => {
             e.preventDefault();
-            //@ts-ignore
+            //@ts-expect-error
             if (UploadRef.current) {
-              //@ts-ignore
+              //@ts-expect-error
               UploadRef.current?.click();
             }
           }}

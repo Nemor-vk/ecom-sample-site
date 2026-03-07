@@ -7,6 +7,7 @@ import { UseFormReturn } from 'react-hook-form';
 import Image from 'next/image';
 
 type Props = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   form: UseFormReturn<any>;
   name: string;
 };

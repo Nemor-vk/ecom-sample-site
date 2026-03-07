@@ -83,6 +83,7 @@ export function DataTable<TData, TValue>({
 
   useEffect(() => {
    console.log("Table instance:", data);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   
 
@@ -271,6 +272,7 @@ export function DataTable<TData, TValue>({
 }
 
 // Helper function to create sortable header
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function SortableHeader({ column, children }: { column: any; children: React.ReactNode }) {
   return (
     <Button

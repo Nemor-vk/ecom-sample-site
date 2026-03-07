@@ -121,13 +121,13 @@ const ProfileHeader = async () => {
   const ironSession = await getIronSessionDecodedCookie();
 
   return (
-    <Card className="border-0 shadow-lg bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 text-white">
+    <Card className="border-0 shadow-lg bg-linear-to-r from-pink-400 via-purple-400 to-indigo-400 text-white">
       <CardContent className="py-8 px-5 flex items-center gap-4">
         <Image src={'/placeholder.svg'} height={100} width={120} alt="profile pic" className="aspect-square rounded-full"/>
         <div className="flex flex-col">
           <h1 className="capitalize text-3xl font-bold mb-2">{`welcome Back, ${ironSession.user?.name} 👋`}</h1>
           <p className="text-pink-100 capitalize">
-            Here's what's happening with your account
+            Here&apos;s what&apos;s happening with your account
           </p>
         </div>
       </CardContent>

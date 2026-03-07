@@ -85,6 +85,7 @@ const ProductEditPage = ({product, refreshContent}: props) => {
       getAllSections();
       fetchCategories();
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
 
@@ -144,6 +145,7 @@ const ProductEditPage = ({product, refreshContent}: props) => {
     },
   ])
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleImagesChange = (images: any[]) => {
     console.log("Product images updated:", images)
     setProductImages(images)

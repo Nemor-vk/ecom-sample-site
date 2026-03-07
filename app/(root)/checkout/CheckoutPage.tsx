@@ -72,7 +72,7 @@ const CheckoutPage = () => {
     };
 
     loadAddresses();
-  }, [selectedAddressId, authSession, isOpen]);
+  }, [selectedAddressId, authSession, isOpen, cartItems.length, pathname]);
 
   const handleAddNewAddress = () => {
     // In a real app, this would open a modal or navigate to an address form
@@ -147,7 +147,7 @@ const CheckoutPage = () => {
     } finally {
       setIsProcessing(false)
     }
-  }, [isProcessing, cartItems, appliedDiscount, authSession?.user?.id, selectedAddressId, selectedPaymentMethod])
+  }, [isProcessing, cartItems, appliedDiscount, authSession?.user?.id, selectedAddressId, selectedPaymentMethod, router])
 
   const { subtotal } = calculateOrderTotals(cartItems, appliedDiscount)
   const isFormValid = selectedAddressId && selectedPaymentMethod && cartItems.length > 0

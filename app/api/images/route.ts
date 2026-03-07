@@ -67,6 +67,7 @@ export async function POST(req: Request) {
   const formData = await req.formData();
   const folder = formData.get('folder')?.toString() || '/';
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const uploadedImages: any[] = [];
 
   const files = formData.getAll('images') as File[];

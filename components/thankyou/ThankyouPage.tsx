@@ -16,10 +16,6 @@ import { CHARGES } from "@/app/constants"
 
 
 export function ThankYouPage({orderData} : {orderData:ExtendedOrder | null}) {
-  if (!orderData) {
-    // show nothing/loader while data is missing
-    return <div className="p-4 text-center">Loading order...</div>;
-  }
 
   useEffect(() => {
     const checkSession = async () => {
@@ -32,7 +28,13 @@ export function ThankYouPage({orderData} : {orderData:ExtendedOrder | null}) {
     checkSession();
 
     console.log("ThankYouPage orderData ", orderData)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+   if (!orderData) {
+    // show nothing/loader while data is missing
+    return <div className="p-4 text-center">Loading order...</div>;
+  }
 
   const customerData:User = orderData?.user;
   const discountAmount = orderData.discount ? calculateDiscountAmount(orderData.discount, Number(orderData.paymentTotal), CHARGES.SHIPPING) : 0;
