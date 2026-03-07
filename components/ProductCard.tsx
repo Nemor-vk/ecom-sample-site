@@ -17,9 +17,10 @@ import { ExtendedProduct } from '@/prisma/extendedModelTypes';
 import { CURRENCY } from '@/app/constants';
 import { useCartStore } from '@/store/cartStore';
 import ButtonWithCount from './ButtonWithCount';
+import { SerializedProduct } from '@/lib/serializers/product.serialize';
   
 
-const ProductCard = ({product} : {product: ExtendedProduct}) => {
+const ProductCard = ({product} : {product: SerializedProduct}) => {
 
   const{cartItems, addToCart, increaseQuantity, decreaseQuantity} = useCartStore();
   const isInCart = cartItems.find(item => item.product.id === product.id);
@@ -35,7 +36,7 @@ const ProductCard = ({product} : {product: ExtendedProduct}) => {
       <CardContent className='px-1.5 relative min-h-[180px]'>
         <div className='relative w-full aspect-square'>
 
-        <Image src={'https://ik.imagekit.io/vivekecom' + product.image[0]?.url || '/assets/banners/girlModel2.jpg'} fill style={{objectFit:'cover'}} alt='card' className='bg-white rounded-md aspect-square object-left-top' />
+        <Image src={'https://ik.imagekit.io/vivekecom' + product.image[0]?.url || '/assets/banners/girlModel2.jpg'} fill style={{objectFit:'cover'}} alt='card' className='bg-white rounded-md aspect-square object-top-left' />
         </div>
         
       <Badge variant="outline" className='absolute bottom-4 left-4 rounded-full border-0.5 shadow-md bg-blue-200 dark:bg-blue-200 dark:text-background text-[8px] md:text-[10px]'>{product.category.name}</Badge>
