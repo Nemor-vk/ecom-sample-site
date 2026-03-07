@@ -3,14 +3,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { redirect } from 'next/navigation'
 import AuthContentPage from './AuthContentPage'
 import { auth } from '@/lib/config/auth.config';
-import { User } from 'next-auth';
+import { Session, User } from 'next-auth';
 
 export type LOGIN_TYPE = 'SIGNIN' | 'SIGNUP';
 const LOGIN_VALUES = { SIGNIN :"SIGNIN", SIGNUP: 'SIGNUP'}
 
 const page = async() => {
 
-  const session:User = await auth();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const session: any = await auth();
 
   return (
     <div className='mt-5 flex justify-center items-center'>

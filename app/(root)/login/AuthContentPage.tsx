@@ -8,7 +8,8 @@ import { LOGIN_TYPE } from './page'
 import { Session, User } from 'next-auth'
 import { redirect, useSearchParams } from 'next/navigation'
 
-const AuthContentPage = ({loginType, session}:{loginType:LOGIN_TYPE, session:Session | null}) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const AuthContentPage = ({loginType, session}:{loginType:LOGIN_TYPE, session:any}) => {
 
     //  Redirect Logic after login
     const searchParams = useSearchParams();
