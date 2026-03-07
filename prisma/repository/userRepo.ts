@@ -2,6 +2,7 @@ import { Gender } from '@/generated/prisma';
 import db from '@/lib/prisma';
 import { dateSchema } from '@/lib/validations';
 import bcrypt from 'bcryptjs';
+import { ExtendedUser } from '../extendedModelTypes';
 
 
 export async function createNeccessaryRolesAndUsers() : Promise<boolean> {
@@ -105,7 +106,7 @@ export async function addNewUser(name:string, email:string, password: string, mo
         }
     })
 
-    return user;
+    return user as ExtendedUser;
 }
 
 

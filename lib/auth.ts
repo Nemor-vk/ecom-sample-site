@@ -46,7 +46,7 @@ export const signUp = async(params: AuthCredentials) => {
     try{
 
         const newUser = await addNewUser(fullName, email, hashedPassword, mobileNumber );
-        return ({success:true, user:newUser})
+        return ({success:true, user:{id:newUser.id, email: newUser.email, name: newUser.fullName, role: newUser.role.name, status: 'online'} })
 
     } catch (error) {
         console.log("Signup error", error)
