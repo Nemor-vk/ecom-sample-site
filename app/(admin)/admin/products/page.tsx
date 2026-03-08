@@ -1,4 +1,4 @@
-'use server'
+// 'use server'
 export const dynamic = 'force-dynamic'
 
 import { ProductsManagement } from '@/components/admin/products/ProductManagement'
