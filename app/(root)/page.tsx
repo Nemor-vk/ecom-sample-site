@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import FeaturedCat from "@/components/FeaturedCat";
 import Hero from "@/components/Hero";
 import { PROMO_CARD } from "../constants";
@@ -5,7 +7,6 @@ import Cards from "@/components/Cards";
 import DisplayCollage from "@/components/DisplayCollage";
 import PromotionSliderWrapper from "@/components/product-slider/PromotionSliderWrapper";
 
-export const dynamic = 'force-dynamic';
 
 export default async function Home() {
 
