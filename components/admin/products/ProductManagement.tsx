@@ -20,34 +20,42 @@ import { useSideBarDrawer } from "@/store/tableActions"
 import { cn } from "@/lib/utils"
 import ProductDrawer from "./ProductDrawer"
 import { API_CONFIG } from "@/app/constants/apiContants"
+import { fetchAllProducts } from "@/service/product.service"
+import { SerializedProduct } from "@/lib/serializers/product.serialize"
 
-export function ProductsManagement() {
+type ProductDataProp = {
+  productData: SerializedProduct[];
+};
 
-  const [productData, setProductData] = useState<ExtendedProduct[]>([])
+export function ProductsManagement({productData} : ProductDataProp) {
+
+  // const [productData, setProductData] = useState<SerializedProduct[]>([])
   const {isOpen} = useSideBarDrawer();
   const [refreshTableContent, setRefreshTableContent] = useState(false)
 
-  useEffect(() => {
-    const products = async () => {
-      try {
-          const response = await fetch("http://localhost:3000/api/product", {
-            headers: {
-              "x-site-origin": API_CONFIG.ALLOWED_ORIGIN,
-              "x-client-key": API_CONFIG.CLIENT_KEY,
-            },
-          });
-          const data = await response.json();
-          console.log("products :  ", data)
-          setProductData(data);
-      } catch (error) {
-          // Log the original error for debugging before rethrowing a new error.
-          console.error("Failed to fetch products error:", error);
-          throw new Error("Failed to fetch products");
-      }
-    };
+  // useEffect(() => {
+  //   const products = async () => {
+  //     try {
+  //         // const response = await fetch("http://localhost:3000/api/product", {
+  //         //   headers: {
+  //         //     "x-site-origin": API_CONFIG.ALLOWED_ORIGIN,
+  //         //     "x-client-key": API_CONFIG.CLIENT_KEY,
+  //         //   },
+  //         // });
+  //         // const data = await response.json();
+  //         // console.log("products :  ", data)
 
-    products()
-  }, [refreshTableContent])
+  //         const data : SerializedProduct[] = await fetchAllProducts().then((res) => !res ? [] : res);
+  //         setProductData(data);
+  //     } catch (error) {
+  //         // Log the original error for debugging before rethrowing a new error.
+  //         console.error("Failed to fetch products error:", error);
+  //         throw new Error("Failed to fetch products");
+  //     }
+  //   };
+
+  //   products()
+  // }, [refreshTableContent])
 
   const handleExport = () => {
     // Export logic here
