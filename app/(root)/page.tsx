@@ -5,6 +5,8 @@ import Cards from "@/components/Cards";
 import DisplayCollage from "@/components/DisplayCollage";
 import PromotionSliderWrapper from "@/components/product-slider/PromotionSliderWrapper";
 
+export const dynamic = 'force-dynamic';
+
 export default async function Home() {
 
   return (
