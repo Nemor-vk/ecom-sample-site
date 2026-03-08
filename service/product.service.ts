@@ -5,6 +5,8 @@ import { ExtendedProduct } from "@/prisma/extendedModelTypes";
 import { findAllProducts } from "@/prisma/repository/productRepo";
 import { toast } from "sonner";
 
+export const dynamic = "force-dynamic"; // Next.js App Router
+
 export const fetchProductById = async (id: string) => {
   try {
     const response = await fetch(siteApiConfig.product.fetchById.replace(PLACEHOLDER, id), {

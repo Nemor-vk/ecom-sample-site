@@ -58,6 +58,7 @@ export async function findProductsBySectionName(sectionName: string) : Promise<E
                 include: {
                 image: true, // Include the image array linked to each product
                 category: true, // Include the category of each product
+                sections: true,
             },
         }
         }
