@@ -10,12 +10,12 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  webpack: (config, { isServer }) => {
-    if (isServer) {
-      config.plugins = [...config.plugins, new PrismaPlugin()];
-    }
-    return config;
-  },
+  // webpack: (config, { isServer }) => {
+  //   if (isServer) {
+  //     config.plugins = [...config.plugins, new PrismaPlugin()];
+  //   }
+  //   return config;
+  // },
 };
 
 export default nextConfig;
