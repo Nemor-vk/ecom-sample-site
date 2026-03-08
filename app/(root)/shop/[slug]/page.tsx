@@ -8,6 +8,8 @@ import ProductCard from '@/components/ProductCard';
 import { SerializedProduct } from '@/lib/serializers/product.serialize';
 import { fetchAllProducts, fetchProductByCategoryName } from '@/service/product.service';
 
+export const dynamic = 'force-dynamic';
+
 type PageParams = Promise<{ slug: string}>;
 
 interface PageProps {
@@ -35,9 +37,9 @@ const page = async(pageProps : PageProps) => {
 
     /// to change db call to api call
     if( slug === ALL_CATEGORIES) {
-      products = await fetchAllProducts();
+      products = await fetchAllProducts().then(res => !res ? [] : res);
     } else {
-      products = await fetchProductByCategoryName(slug.toLowerCase());
+      products = await fetchProductByCategoryName(slug.toLowerCase()).then(res => !res ? [] : res);
     }
 
   return (

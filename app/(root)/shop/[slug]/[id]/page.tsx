@@ -5,6 +5,8 @@ import ProductPage from '@/components/products/ProductPage';
 import { Separator } from '@/components/ui/separator';
 import { fetchProductById } from '@/service/product.service';
 
+export const dynamic = 'force-dynamic';
+
 // Define your params structure within a Promise - vercel fix 
 type PageParams = Promise<{ slug: string; id: string }>;
 
@@ -23,7 +25,7 @@ const page = async ( props : Props) => {
   const productItem = await fetchProductById(id);
 
   if (!productItem) {
-    return <div>404</div>;
+    return <div>404 - Product not found</div>;
   }
 
   return (
