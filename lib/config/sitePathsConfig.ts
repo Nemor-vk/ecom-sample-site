@@ -1,6 +1,8 @@
+
+
 export const PLACEHOLDER = 'PLACEHOLDER';
 // export const siteBaseApiUrl = 'http://localhost:3000/api';
-export const siteBaseApiUrl = '';
+export const siteBaseApiUrl = "/api";
 
 export const siteApiConfig = {
     categoriesApi : {

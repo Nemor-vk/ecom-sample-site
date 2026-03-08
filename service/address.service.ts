@@ -1,4 +1,4 @@
-import { API_CONFIG } from "@/app/constants/apiContants";
+"use client"
 import { PLACEHOLDER, siteApiConfig } from "@/lib/config/sitePathsConfig";
 import { toast } from "sonner";
 

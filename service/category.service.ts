@@ -1,16 +1,22 @@
-'use server'
+// 'use server'
+"use client"
 import { API_CONFIG } from "@/app/constants/apiContants";
 import { siteApiConfig, siteBaseApiUrl } from "@/lib/config/sitePathsConfig";
+// import { headers } from "next/headers";
 
 export async function fetchAllCategories() {
   try {
-    const response = await fetch(siteBaseApiUrl + siteApiConfig.categoriesApi.baseApi, {
-      method: "GET",
-      headers: {
-        "x-site-origin": API_CONFIG.ALLOWED_ORIGIN,
-        "x-client-key": API_CONFIG.CLIENT_KEY,
+    // const headerList = await headers();
+    // const host = headerList.get("host");
+    const response = await fetch( "/api" + siteApiConfig.categoriesApi.baseApi,
+      {
+        method: "GET",
+        headers: {
+          "x-site-origin": API_CONFIG.ALLOWED_ORIGIN,
+          "x-client-key": API_CONFIG.CLIENT_KEY,
+        },
       },
-    });
+    );
 
     const responseJson = await response.json();
 

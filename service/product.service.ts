@@ -1,5 +1,8 @@
 import { API_CONFIG } from "@/app/constants/apiContants";
 import { PLACEHOLDER, siteApiConfig } from "@/lib/config/sitePathsConfig";
+import { sanitizeProducts, SerializedProduct } from "@/lib/serializers/product.serialize";
+import { ExtendedProduct } from "@/prisma/extendedModelTypes";
+import { findAllProducts } from "@/prisma/repository/productRepo";
 import { toast } from "sonner";
 
 export const fetchProductById = async (id: string) => {
@@ -22,16 +25,20 @@ export const fetchProductById = async (id: string) => {
 
 export const fetchAllProducts = async () => {
   try {
-    const response = await fetch(siteApiConfig.product.baseApi, {
-      method: "GET",
-      headers: {
-        "x-site-origin": API_CONFIG.ALLOWED_ORIGIN,
-        "x-client-key": API_CONFIG.CLIENT_KEY,
-      },
-    });
-    const data = await response.json();
+    // const response = await fetch(siteApiConfig.product.baseApi, {
+    //   method: "GET",
+    //   headers: {
+    //     "x-site-origin": API_CONFIG.ALLOWED_ORIGIN,
+    //     "x-client-key": API_CONFIG.CLIENT_KEY,
+    //   },
+    // });
+    // const data = await response.json();
+
+    const products: ExtendedProduct[] = await findAllProducts();
+    const safeProducts: SerializedProduct[] = sanitizeProducts(products);
     // console.log("fetch all products API res:: ", data);
-    return data;
+    // return data;
+    return safeProducts;
   } catch (error) {
     console.error("Failed to fetch All products API error:", error);
     toast.error("Failed to load all products");

@@ -1,3 +1,4 @@
+"use client"
 import { API_CONFIG } from "@/app/constants/apiContants";
 import { Section } from "@/generated/prisma";
 import { getClientConfig } from "@/lib/config/apiConfig";

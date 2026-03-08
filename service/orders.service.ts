@@ -1,3 +1,4 @@
+"use client"
 import { API_CONFIG } from "@/app/constants/apiContants";
 import { PLACEHOLDER, siteApiConfig, siteBaseApiUrl } from "@/lib/config/sitePathsConfig";
 import { orderResponseModel } from "@/models/orders.responseModel";
