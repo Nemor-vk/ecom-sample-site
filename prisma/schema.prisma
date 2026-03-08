@@ -1,6 +1,6 @@
 generator client {
   provider      = "prisma-client-js"
-  binaryTargets = ["native", "linux-musl", "rhel-openssl-3.0.x"] // first one is for cross-platform, second one for docker, last one for serverless environment. safe to include all
+  binaryTargets = ["native", "debian-openssl-3.0.x"] // native for local dev, debian-openssl-3.0.x for Vercel
   // output   = "../generated/prisma"
 }
 
